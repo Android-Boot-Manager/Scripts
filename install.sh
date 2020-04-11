@@ -23,18 +23,18 @@ cp /sys/firmware/fdt "/data/bootset/$2/dtb.dtb"
 # Copy kernel
 mkdir -p /sdcard/abm/temp/boot
 unpackbootimg -i /sdcard/abm/stockboot.img -o /sdcard/abm/temp/boot > /dev/null 2>&1
-cp /sdcard/abm/temp/boot/stockboot.img-zImage "/sdcard/bootset/$2/zImage"
+cp /sdcard/abm/temp/boot/stockboot.img-zImage "/data/bootset/$2/zImage"
 
 # Copy rd
-cp /sdcard/abm/temp/boot/stockboot.img-ramdisk.gz "/sdcard/bootset/$2/inird.cpio.gz"
+cp /sdcard/abm/temp/boot/stockboot.img-ramdisk.gz "/data/bootset/$2/inird.cpio.gz"
 
 # Create entry
 cmdline=$(cat /proc/cmdline)
-cat << EOF >> /sdcard/bootset/lk2nd/lk2nd.conf
+cat << EOF >> /data/bootset/lk2nd/lk2nd.conf
    default    Entry 01
    timeout    5
 EOF
-cat << EOF >> /sdcard/bootset/lk2nd/entries/entry01.conf
+cat << EOF >> /data/bootset/lk2nd/entries/entry01.conf
   title      $3
   linux      $2/zImage
   initrd     $2/initrd.cpio.gz
