@@ -30,8 +30,8 @@ cp /sdcard/abm/temp/boot/stockboot.img-ramdisk.gz /dcard/bootset/$2/inird.cpio.g
 cmdline=$(cat /proc/cmdline)
 echo  "  default    Entry 01" >> /sdcard/bootset/lk2nd/lk2nd.conf
 echo  "  timeout    5" >> /sdcard/bootset/lk2nd/lk2nd.conf
-echo  "  title      $3" >> /sdcard/bootset/lk2nd/entries/entry01.conf
-echo  "  linux      $2/zImage" >> /sdcard/bootset/lk2nd/entries/entry01.conf 
-echo  "  initrd     $2/initrd.cpio.gz" >> /sdcard/bootset/lk2nd/entries/entry01.conf
-echo  "  dtb        $2/dtb.dtb" >> /sdcard/bootset/lk2nd/entries/entry01.conf
-echo  "  options    $cmdline  >> /sdcard/bootset/lk2nd/entries/entry01.conf
+echo  "  title      "$3 >> /sdcard/bootset/lk2nd/entries/entry01.conf
+echo  "  linux      "$2"/zImage" >> /sdcard/bootset/lk2nd/entries/entry01.conf 
+echo  "  initrd     "$2"/initrd.cpio.gz" >> /sdcard/bootset/lk2nd/entries/entry01.conf
+echo  "  dtb        "$2"/dtb.dtb" >> /sdcard/bootset/lk2nd/entries/entry01.conf
+echo  "  options    " $cmdline  >> /sdcard/bootset/lk2nd/entries/entry01.conf
