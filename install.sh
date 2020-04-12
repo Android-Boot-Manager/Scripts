@@ -41,3 +41,7 @@ cat << EOF >> /data/bootset/lk2nd/entries/entry01.conf
   dtb        $2/dtb.dtb
   options    $cmdline
 EOF
+
+# Unmount bootset, and sync cache
+umount /data/bootset
+sync
