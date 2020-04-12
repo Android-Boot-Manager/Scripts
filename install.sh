@@ -27,7 +27,7 @@ unpackbootimg -i /sdcard/abm/stockboot.img -o /sdcard/abm/temp/boot > /dev/null 
 cp /sdcard/abm/temp/boot/stockboot.img-zImage "/data/bootset/$2/zImage"
 
 # Copy rd
-cp /sdcard/abm/temp/boot/stockboot.img-ramdisk.gz "/data/bootset/$2/inird.cpio.gz"
+cp /sdcard/abm/temp/boot/stockboot.img-ramdisk.gz "/data/bootset/$2/initrd.cpio.gz"
 
 # Create entry
 cmdline=$(cat /proc/cmdline)
@@ -46,3 +46,6 @@ EOF
 # Unmount bootset, and sync cache
 umount /data/bootset
 sync
+
+# Clean up
+rm -r /sdcard/adm/temp
