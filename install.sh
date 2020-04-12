@@ -19,6 +19,7 @@ mkdir -p "/data/bootset/$2"
 
 # Copy device tree
 cp /sys/firmware/fdt "/data/bootset/$2/dtb.dtb"
+cp /sys/firmware/fdt /data/bootset/msm8937-motorola-cedric.dtb
 
 # Copy kernel
 mkdir -p /sdcard/abm/temp/boot
