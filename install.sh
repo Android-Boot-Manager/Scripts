@@ -34,6 +34,10 @@ cmdline=$(cat /proc/cmdline)
 cat << EOF >> /data/bootset/lk2nd/lk2nd.conf
    default    Entry 01
    timeout    5
+   bgcolor    0x808080
+   fcolor     0x000080
+   fscolor    0xFFFFFF
+   entscolor  0x808080
 EOF
 cat << EOF >> /data/bootset/lk2nd/entries/entry01.conf
   title      $3
