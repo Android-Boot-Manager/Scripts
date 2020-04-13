@@ -48,4 +48,4 @@ umount /data/bootset
 sync
 
 # Clean up
-rm -r /sdcard/adm/temp
+rm -r /sdcard/abm/temp
