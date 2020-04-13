@@ -37,6 +37,7 @@ cat << EOF >> /data/bootset/lk2nd/lk2nd.conf
    bgcolor    0x808080
    fcolor     0x000080
    fscolor    0xFFFFFF
+   entcolor   0x808080
    entscolor  0x808080
 EOF
 cat << EOF >> /data/bootset/lk2nd/entries/entry01.conf
