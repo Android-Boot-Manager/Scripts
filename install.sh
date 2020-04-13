@@ -10,7 +10,7 @@ dd if=/dev/block/bootdevice/by-name/boot of=/sdcard/abm/stockboot.img
 dd if="$1" of=/dev/block/bootdevice/by-name/boot
 
 # Format oem
-mkfs.ext2 /dev/block/bootdevice/by-name/oem
+true | mke2fs /dev/block/bootdevice/by-name/oem
 
 # Mount bootset
 mkdir -p /data/bootset
