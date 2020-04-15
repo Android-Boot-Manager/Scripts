@@ -1,0 +1,11 @@
+workflow "Shellcheck" {
+  on = "push"
+  resolves = [
+    "Shellcheck",
+  ]
+}
+
+
+action "Shellcheck" {
+  uses = "ludeeus/actions/shellcheck@master"
+}
