@@ -1,10 +1,11 @@
 #!/system/bin/sh
 
 # Create working dir
-mkdir -p /sdcard/abm
+mkdir /sdcard/abm
 mkdir /sdcard/abm/tmp
 mkdir /sdcard/abm/tmp/boot
 mkdir /sdcard/abm/tmp/dt
+mkdir /sdcard/abm/tmp/dtpatch
 
 # Mount bootset
 mkdir -p /data/bootset
@@ -42,3 +43,38 @@ dtc -I dtb -O dts -o /sdcard/abm/tmp/dt/current.dts /sdcard/abm/tmp/dt/current.d
 bid=$(cat /sdcard/abm/tmp/dt/current.dts | grep board-id)
 bid=$(echo "$bid" | awk '{print $4}')
 bid=${bid:2:4}
+
+#Choose correct dtb
+cdtb=$(ls /sdcard/abm/tmp/dt/*"$bid"*)
+cp "$cdtb" /sdcard/abm/tmp/dtpatch/dtb.dtb
+
+#Decompile dtb
+dtc -I dtb -O dts -o /sdcard/abm/tmp/dtpatch/dtb.dts /sdcard/abm/tmp/dtpatch/dtb.dtb
+
+#Patch dts
+sed -i "s/\/dev\/block\/platform\/soc\/7824900.sdhci\/by-name\/system/\/dev\/block\/platform\/soc\/7864900.sdhci\/$4/g" /sdcard/abm/tmp/dtpatch/dtb.dts 
+
+#Compile dts
+dtc -O dtb -o "/data/bootset/$2/dtb.dtb" /sdcard/abm/tmp/dtpatch/dtb.dts
+
+#Copy kernel
+cp /sdcard/abm/tmp/boot/boot.img-zImage "/data/bootset/$2/zImage"
+
+#Copy rd
+cp /sdcard/abm/tmp/boot/boot.img-ramdisk.gz "/data/bootset/$2/initrd.cpio.gz"
+
+#Create entry
+cmdline=$(cat /sdcard/abm/tmp/boot/boot.img-cmdline)
+cat << EOF >> /data/bootset/lk2nd/entries/entry"$6".conf
+  title      $5
+  linux      $2/zImage
+  initrd     $2/initrd.cpio.gz
+  dtb        $2/dtb.dtb
+  options    $cmdline
+EOF
+
+#Clean up
+rm -r /sdcard/abm/tmp
+
+#Unmount bootset 
+umount /data/bootset
