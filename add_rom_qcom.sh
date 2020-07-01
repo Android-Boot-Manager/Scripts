@@ -42,7 +42,7 @@ cp /sys/firmware/fdt /sdcard/abm/tmp/dt/current.dtb
 dtc -I dtb -O dts -o /sdcard/abm/tmp/dt/current.dts /sdcard/abm/tmp/dt/current.dtb
 
 #Get board id
-bid=$(cmd /sdcard/abm/tmp/dt/current.dts | grep board-id)
+bid=$(grep board-id < /sdcard/abm/tmp/dt/current.dts)
 bid=$(echo "$bid" | awk '{print $4}')
 # shellcheck disable=SC2039
 bid=${bid:2:4}
