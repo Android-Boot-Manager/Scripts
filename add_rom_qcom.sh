@@ -31,8 +31,10 @@ lz4 -d /sdcard/abm/tmp/dt/dtlz4 /sdcard/abm/tmp/dt/dt
 
 #Go to dt dir, ectract dtb and go back
 cwd=$(pwd)
+# shellcheck disable=SC2164
 cd /sdcard/abm/tmp/dt/
 "$cwd/dtimgextract" dt
+# shellcheck disable=SC2164
 cd "$cwd"
 
 #Get current rom DTB
@@ -40,8 +42,9 @@ cp /sys/firmware/fdt /sdcard/abm/tmp/dt/current.dtb
 dtc -I dtb -O dts -o /sdcard/abm/tmp/dt/current.dts /sdcard/abm/tmp/dt/current.dtb
 
 #Get board id
-bid=$(cat /sdcard/abm/tmp/dt/current.dts | grep board-id)
+bid=$(cmd /sdcard/abm/tmp/dt/current.dts | grep board-id)
 bid=$(echo "$bid" | awk '{print $4}')
+# shellcheck disable=SC2039
 bid=${bid:2:4}
 
 #Choose correct dtb
