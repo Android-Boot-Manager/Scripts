@@ -1,10 +1,10 @@
 #!/system/bin/sh
 
-if [ ! -f /dev/block/sda ] && [ ! -f /dev/mmcblk1 ]; then
+if [ -b /dev/block/sda ] && [ -b /dev/mmcblk1 ]; then
     echo "both"
-elif [ ! -f /dev/block/sda ]; then
+elif [ -b /dev/block/sda ]; then
     echo "usb"
-elif [ ! -f /dev/mmcblk1 ]; then
+elif [ -b /dev/mmcblk1 ]; then
     echo "sd"
 else
     echo "none"
