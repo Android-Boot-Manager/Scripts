@@ -14,7 +14,9 @@ pkill -f logcat
 
 # Format cache
 umount -f /cache
-true | mke2fs /dev/block/by-name/cache
+./lz4 -d vollacache.img.lz4
+dd if=vollacache.img of=/dev/block/by-name/cache
+rm vollacache.img
 
 # Mount cache
 mkdir -p /data/bootset
@@ -24,11 +26,11 @@ mount -t ext4 /dev/block/by-name/cache /cache
 mkdir -p /cache/db/entries
 
 # Create entry
-cat << EOF >> /dcache/db/db.conf
+cat << EOF >> /cache/db/db.conf
    default    Entry 01
    timeout    5
 EOF
-cat << EOF >> /data/bootset/lk2nd/entries/entry01.conf
+cat << EOF >> /cache/db/entries/entry01.conf
   title      $3
   linux      null
   initrd     null
