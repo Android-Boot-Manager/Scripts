@@ -55,5 +55,8 @@ EOF
 umount /data/bootset
 sync
 
+# Write meta
+echo /dev/block/bootdevice/by-name/oem > /data/abm-part.cfg
+
 # Clean up
 rm -r /sdcard/abm/temp
