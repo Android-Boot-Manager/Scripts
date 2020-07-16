@@ -38,3 +38,4 @@ cat << EOF >> /cache/db/entries/entry01.conf
   options    null
 EOF
 
+echo /dev/block/by-name/cache > /data/abm-part.cfg
