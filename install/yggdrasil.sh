@@ -40,5 +40,11 @@ cat << EOF >> /cache/db/entries/entry01.conf
 EOF
 
 cat > /data/abm-part.cfg << EOF
-mkdir -p /data/bootset/lk2nd                            mount -t ext4 /dev/block/by-name/cache /cache           mount --bind /cache/db /data/bootset/lk2nd
+mkdir -p /data/bootset/lk2nd
+mount -t ext4 /dev/block/by-name/cache /cache
+mount --bind /cache/db /data/bootset/lk2nd
+EOF
+
+cat > /data/abm-part.2.cfg << EOF
+# useless.
 EOF
