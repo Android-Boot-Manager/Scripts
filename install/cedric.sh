@@ -56,7 +56,10 @@ umount /data/bootset
 sync
 
 # Write meta
-echo /dev/block/bootdevice/by-name/oem > /data/abm-part.cfg
+cat > /data/abm-part.cfg << EOF
+mkdir -p /data/bootset                                  mount -t ext4 /dev/block/bootdevice/by-name/oem /data/bo
+otset
+EOF
 
 # Clean up
 rm -r /sdcard/abm/temp

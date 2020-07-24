@@ -19,8 +19,9 @@ dd if=vollacache.img of=/dev/block/by-name/cache
 rm vollacache.img
 
 # Mount cache
-mkdir -p /data/bootset
+mkdir -p /data/bootset/lk2nd
 mount -t ext4 /dev/block/by-name/cache /cache
+mount --bind /cache/db /data/bootset/lk2nd
 
 # Create folder for entries
 mkdir -p /cache/db/entries
@@ -38,4 +39,6 @@ cat << EOF >> /cache/db/entries/entry01.conf
   options    null
 EOF
 
-echo /dev/block/by-name/cache > /data/abm-part.cfg
+cat > /data/abm-part.cfg << EOF
+mkdir -p /data/bootset/lk2nd                            mount -t ext4 /dev/block/by-name/cache /cache           mount --bind /cache/db /data/bootset/lk2nd
+EOF
