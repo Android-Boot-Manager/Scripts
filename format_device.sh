@@ -14,5 +14,6 @@ else
     exit 1
 fi
 
+cp partition_table.sfdisk /data/abmmeta/pt.sfdisk
 touch /data/abmmeta/abm-drive.cfg
 umount /data/abmmeta
