@@ -69,7 +69,7 @@ sfdisk /dev/mmcblk1 < /data/abmmeta/pt.sfdisk
 systempart=$(echo $(ls /dev/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
 
 #Format partition
-mkfs.ext4 "/dev/mmcblk1p$systempart
+mkfs.ext4 "/dev/mmcblk1p$systempart"
 
 #Patch dts
 sed -i "s/\/dev\/block\/platform\/soc\/7824900.sdhci\/by-name\/system/\/dev\/block\/platform\/soc\/7864900.sdhci\/mmcblk1p$systempart/g" /sdcard/abm/tmp/dtpatch/dtb.dts 
