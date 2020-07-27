@@ -10,6 +10,7 @@ mkdir /sdcard/abm/tmp
 mkdir /sdcard/abm/tmp/boot
 mkdir /sdcard/abm/tmp/dt
 mkdir /sdcard/abm/tmp/dtpatch
+mkdir /sdcard/abm/tmp/rom
 
 # Create folder for new OS
 mkdir -p "/data/bootset/$2"
