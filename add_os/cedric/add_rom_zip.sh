@@ -63,7 +63,7 @@ echo $(($endofpart + 1+4194304)) > /data/abmmeta/endofparts
 #Write partition table
 sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$' ) + 1)):$(($endofpart + 1)):+4194304 /dev/block/mmcblk1
 
-partprobe; sleep 2
+partprobe /dev/block/mmcblk1; sleep 2
 
 #Find partition number 
 systempart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
