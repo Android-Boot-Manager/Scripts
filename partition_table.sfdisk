@@ -1,6 +1,0 @@
-label: gpt
-unit: sectors
-first-lba: 2048
-start=2048, size=32768, type=20
-
-
