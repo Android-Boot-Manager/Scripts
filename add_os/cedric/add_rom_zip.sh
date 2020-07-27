@@ -57,9 +57,9 @@ mount /dev/block/mmcblk1p1 /data/abmmeta
 #Get end of last partition
 endofpart=$(cat /data/abmmeta/endofparts)
 
-umount /data/abmmeta
-
 echo $(($endofpart + 1+4194304)) > /data/abmmeta/endofparts
+
+umount /data/abmmeta
 
 #Write partition table
 sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$' ) + 1)):$(($endofpart + 1)):+4194304 /dev/block/mmcblk1
@@ -96,5 +96,7 @@ cat << EOF >> /data/bootset/lk2nd/entries/entry"$4".conf
   options    $cmdline
 EOF
 
+umount /data/abmmeta
+
 #Clean up
-#rm -r /sdcard/abm/tmp
+rm -r /sdcard/abm/tmp
