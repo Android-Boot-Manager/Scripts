@@ -1,34 +1,31 @@
 #!/system/bin/sh
 
-# Script for installing ROM zip, with halium's system image and halium boot for ABM. Parametrs: ROM folder name, rom zip, idk,
-# ROM name in menu, entry number.
+# Script for installing ROM zip, with halium's system image and halium boot for ABM. Parametrs: ROM folder name, ROM name in menu,
+# ROM zip, entry number.
 
 PATH=.:$PATH
 # Create working dir
-mkdir /sdcard/abm
-mkdir /sdcard/abm/tmp
-mkdir /sdcard/abm/tmp/boot
-mkdir /sdcard/abm/tmp/dt
-mkdir /sdcard/abm/tmp/dtpatch
-mkdir /sdcard/abm/tmp/rom
+mkdir -p /sdcard/abm
+mkdir -p /sdcard/abm/tmp
+mkdir -p /sdcard/abm/tmp/boot
+mkdir -p /sdcard/abm/tmp/dt
+mkdir -p /sdcard/abm/tmp/dtpatch
+mkdir -p /sdcard/abm/tmp/rom
 
 # Create folder for new OS
-mkdir -p "/data/bootset/$2"
+mkdir -p "/data/bootset/$1"
 
 #Unarchive it
-unzip "$3" -d /sdcard/abm/tmp/rom
+unzip "$3" -d /sdcard/abm/tmp/rom/
 
 #Copy boot
 cp /sdcard/abm/tmp/rom/boot.img /sdcard/abm/tmp/boot
 
 #Unpack boot
-unpackbootimg -i /sdcard/abm/tmp/boot/boot.img -o /sdcard/abm/tmp/boot
+unpackbootimg -i /sdcard/abm/tmp/boot/boot.img -o /sdcard/abm/tmp/boot/
 
 #Copy dt
-cp /sdcard/abm/tmp/boot/boot.img-dt /sdcard/abm/tmp/dt/dtlz4
-
-#Unarchive dt
-lz4 -d /sdcard/abm/tmp/dt/dtlz4 /sdcard/abm/tmp/dt/dt
+cp /sdcard/abm/tmp/boot/boot.img-dt /sdcard/abm/tmp/dt/dt
 
 #Go to dt dir, ectract dtb and go back
 cwd=$(pwd)
@@ -54,7 +51,6 @@ cp "$cdtb" /sdcard/abm/tmp/dtpatch/dtb.dtb
 
 #Decompile dtb
 dtc -I dtb -O dts -o /sdcard/abm/tmp/dtpatch/dtb.dts /sdcard/abm/tmp/dtpatch/dtb.dtb
-
 #Mount metadata
 mount /dev/mmcblk1p1 /data/abmmeta
 
@@ -74,7 +70,7 @@ systempart=$(echo $(ls /dev/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
 mkfs.ext4 "/dev/mmcblk1p$systempart"
 
 #Patch dts
-sed -i "s/\/dev\/block\/platform\/soc\/7824900.sdhci\/by-name\/system/\/dev\/block\/platform\/soc\/7864900.sdhci\/mmcblk1p$systempart/g" /sdcard/abm/tmp/dtpatch/dtb.dts 
+sed -i "s/\/dev\/block\/platform\/soc\/7824900.sdhci\/by-name\/system/\/dev\/block\/platform\/soc\/7864900.sdhci\/mmcblk1p$systempart/g" /sdcard/abm/tmp/dtpatch/dtb.dts
 
 #Compile dts
 dtc -O dtb -o "/data/bootset/$2/dtb.dtb" /sdcard/abm/tmp/dtpatch/dtb.dts
@@ -87,16 +83,13 @@ cp /sdcard/abm/tmp/boot/boot.img-ramdisk.gz "/data/bootset/$2/initrd.cpio.gz"
 
 #Create entry
 cmdline=$(cat /sdcard/abm/tmp/boot/boot.img-cmdline)
-cat << EOF >> /data/bootset/lk2nd/entries/entry"$5".conf
-  title      $4
-  linux      $2/zImage
-  initrd     $2/initrd.cpio.gz
-  dtb        $2/dtb.dtb
+cat << EOF >> /data/bootset/lk2nd/entries/entry"$4".conf
+  title      $2
+  linux      $1/zImage
+  initrd     $1/initrd.cpio.gz
+  dtb        $1/dtb.dtb
   options    $cmdline
 EOF
 
 #Clean up
-rm -r /sdcard/abm/tmp
-
-#Unmount bootset 
-umount /data/bootset
+#rm -r /sdcard/abm/tmp
