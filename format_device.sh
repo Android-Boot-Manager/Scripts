@@ -13,7 +13,7 @@ else
     rm -r /data/abmmeta
     exit 1
 fi
-
+echo "34816" > /data/abmmeta/endofparts
 cp partition_table.sfdisk /data/abmmeta/pt.sfdisk
 touch /data/abmmeta/abm-drive.cfg
 umount /data/abmmeta
