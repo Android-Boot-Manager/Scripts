@@ -1,19 +1,21 @@
 #!/system/bin/sh
-
-mkdir /data/abmmeta
+PATH=.:$PATH
+mkdir -p /data/abmmeta
 if [ "$1" = "usb" ]; then
-    sfdisk /dev/block/sda < partition_table.sfdisk
-    mkfs.ext4 /dev/block/sda1
+    sgdisk /dev/block/sda < ../Scripts/partition_table.sfdisk
+    partprobe; sleep 3
+    true | mkfs.ext4 /dev/block/sda1
     mount /dev/block/sda1 /data/abmmeta
 elif [ "$1" = "sd" ]; then
-    sfdisk /dev/mmcblk1 < partition_table.sfdisk
-    mkfs.ext4 /dev/mmcblk1p1
-    mount /dev/mmcblk1p1 /data/abmmeta
+    sgdisk /dev/block/mmcblk1 < ../Scripts/partition_table.sfdisk
+    partprobe; sleep 3
+    true | mkfs.ext4 /dev/block/mmcblk1p1
+    mount /dev/block/mmcblk1p1 /data/abmmeta
 else
     rm -r /data/abmmeta
     exit 1
 fi
 echo "34816" > /data/abmmeta/endofparts
-cp partition_table.sfdisk /data/abmmeta/pt.sfdisk
+cp ../Scripts/partition_table.sfdisk /data/abmmeta/pt.sfdisk
 touch /data/abmmeta/abm-drive.cfg
 umount /data/abmmeta
