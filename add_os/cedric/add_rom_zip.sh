@@ -52,35 +52,36 @@ cp "$cdtb" /sdcard/abm/tmp/dtpatch/dtb.dtb
 #Decompile dtb
 dtc -I dtb -O dts -o /sdcard/abm/tmp/dtpatch/dtb.dts /sdcard/abm/tmp/dtpatch/dtb.dtb
 #Mount metadata
-mount /dev/mmcblk1p1 /data/abmmeta
+mount /dev/block/mmcblk1p1 /data/abmmeta
 
 #Get end of last partition
 endofpart=$(cat /data/abmmeta/endofparts)
 
-#Add to sfdisk file
-echo "start=$(($endofpart + 1)), size=4194304, type=20" >> /data/abmmeta/pt.sfdisk
+
 echo $(($endofpart + 1+4194304)) > /data/abmmeta/endofparts
 
 #Write partition table
-sgdisk /dev/mmcblk1 < /data/abmmeta/pt.sfdisk
+sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$' ) + 1)):$(($endofpart + 1)):+4194304 /dev/block/mmcblk1
+
+partprobe; sleep 2
 
 #Find partition number 
-systempart=$(echo $(ls /dev/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
+systempart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
 
 #Format partition
-mkfs.ext4 "/dev/mmcblk1p$systempart"
+true | mkfs.ext4 "/dev/block/mmcblk1p$systempart"
 
 #Patch dts
-sed -i "s/\/dev\/block\/platform\/soc\/7824900.sdhci\/by-name\/system/\/dev\/block\/platform\/soc\/7864900.sdhci\/mmcblk1p$systempart/g" /sdcard/abm/tmp/dtpatch/dtb.dts
+sed -i "s/\/dev\/block\/platform\/soc\/7824900.sdhci\/by-name\/system/mmcblk1p$systempart/g" /sdcard/abm/tmp/dtpatch/dtb.dts
 
 #Compile dts
-dtc -O dtb -o "/data/bootset/$2/dtb.dtb" /sdcard/abm/tmp/dtpatch/dtb.dts
+dtc -O dtb -o "/data/bootset/$1/dtb.dtb" /sdcard/abm/tmp/dtpatch/dtb.dts
 
 #Copy kernel
-cp /sdcard/abm/tmp/boot/boot.img-zImage "/data/bootset/$2/zImage"
+cp /sdcard/abm/tmp/boot/boot.img-zImage "/data/bootset/$1/zImage"
 
 #Copy rd
-cp /sdcard/abm/tmp/boot/boot.img-ramdisk.gz "/data/bootset/$2/initrd.cpio.gz"
+cp /sdcard/abm/tmp/boot/boot.img-ramdisk.gz "/data/bootset/$1/initrd.cpio.gz"
 
 #Create entry
 cmdline=$(cat /sdcard/abm/tmp/boot/boot.img-cmdline)
