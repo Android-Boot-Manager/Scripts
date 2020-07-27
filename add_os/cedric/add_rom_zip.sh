@@ -59,6 +59,7 @@ endofpart=$(cat /data/abmmeta/endofparts)
 
 #Add to sfdisk file
 echo "start=$(($endofpart + 1)), size=4194304, type=20" >> /data/abmmeta/pt.sfdisk
+echo $(($endofpart + 1+4194304)) > /data/abmmeta/endofparts
 
 #Write partition table
 sgdisk /dev/mmcblk1 < /data/abmmeta/pt.sfdisk
