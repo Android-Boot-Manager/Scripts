@@ -3,6 +3,7 @@
 # Script for installing ROM zip, with halium's system image and halium boot for ABM. Parametrs: ROM folder name, rom zip, idk,
 # ROM name in menu, entry number.
 
+PATH=.:$PATH
 # Create working dir
 mkdir /sdcard/abm
 mkdir /sdcard/abm/tmp
@@ -63,7 +64,7 @@ endofpart=$(cat /data/abmmeta/endofparts)
 echo "start=$(($endofpart + 1)), size=4194304, type=20" >> /data/abmmeta/pt.sfdisk
 
 #Write partition table
-sfdisk /dev/mmcblk1 < /data/abmmeta/pt.sfdisk
+sgdisk /dev/mmcblk1 < /data/abmmeta/pt.sfdisk
 
 #Find partition number 
 systempart=$(echo $(ls /dev/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
