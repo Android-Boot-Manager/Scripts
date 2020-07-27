@@ -38,6 +38,9 @@ cat << EOF >> /cache/db/entries/entry01.conf
   initrd     null
   dtb        null
   options    null
+  xRom       real
+  xRomSystem /dev/block/by-name/system
+  xRomData   /dev/block/by-name/data
 EOF
 
 cat > /data/abm-part.cfg << EOF

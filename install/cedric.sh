@@ -49,6 +49,9 @@ cat << EOF >> /data/bootset/lk2nd/entries/entry01.conf
   initrd     $2/initrd.cpio.gz
   dtb        $2/dtb.dtb
   options    $cmdline
+  xRom       real
+  xRomSystem /dev/block/bootdevice/by-name/system
+  xRomData   /dev/block/bootdevice/by-name/data
 EOF
 
 # Unmount bootset, and sync cache
