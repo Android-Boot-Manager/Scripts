@@ -57,6 +57,7 @@ mount /dev/block/mmcblk1p1 /data/abmmeta
 #Get end of last partition
 endofpart=$(cat /data/abmmeta/endofparts)
 
+umount /data/abmmeta
 
 echo $(($endofpart + 1+4194304)) > /data/abmmeta/endofparts
 
@@ -64,6 +65,8 @@ echo $(($endofpart + 1+4194304)) > /data/abmmeta/endofparts
 sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$' ) + 1)):$(($endofpart + 1)):+4194304 /dev/block/mmcblk1
 
 partprobe /dev/block/mmcblk1; sleep 2
+
+mount /dev/block/mmcblk1p1 /data/abmmeta
 
 #Find partition number 
 systempart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
