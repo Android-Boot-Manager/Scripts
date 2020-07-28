@@ -79,7 +79,7 @@ cp /sdcard/abm/tmp/boot/dtbdump_1.dtb "/data/bootset/$1/dtb.dtb"
 cp /sdcard/abm/tmp/boot/kernel "/data/bootset/$1/zImage"
 
 #Copy rd
-cp /sdcard/abm/tmp/boot/boot.img-ramdisk.gz "/data/bootset/$1/initrd.cpio.gz"
+cp haliumrd-sleep10.cpio.gz "/data/bootset/$1/initrd.cpio.gz"
 
 #Create entry
 cat << EOF >> /data/bootset/db/entries/entry"$5".conf
