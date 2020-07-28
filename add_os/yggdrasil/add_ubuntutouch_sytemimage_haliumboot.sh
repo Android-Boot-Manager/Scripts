@@ -29,37 +29,45 @@ gunzip -d kernel.gz
 cd "$cwd"
 
 #Mount metadata
-mount /dev/mmcblk1p1 /data/abmmeta
+mount /dev/block/mmcblk1p1 /data/abmmeta
 
 #Get end of last partition
 endofpart=$(cat /data/abmmeta/endofparts)
 
-#Add to sfdisk file
-echo "start=$(($endofpart + 1)), size=4194304, type=20" >> /data/abmmeta/pt.sfdisk
-echo $(($endofpart + 1+4194304)) > /data/abmmeta/endofparts
-endofpart=$(cat /data/abmmeta/endofparts)
 
 #Write partition table
-sgdisk /dev/mmcblk1 < /data/abmmeta/pt.sfdisk
+sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$(($endofpart + 1)):+6291456 /dev/block/mmcblk1
 
-#Find partition number 
-systempart=$(echo $(ls /dev/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
-
-#Format partition
-mkfs.ext4 "/dev/mmcblk1p$systempart"
-
-echo "start=$(($endofpart + 1)), size=4194304, type=20" >> /data/abmmeta/pt.sfdisk
-echo $(($endofpart + 1+4194304)) > /data/abmmeta/endofparts
+#Modify endofpart
+echo $(($endofpart + 1+6291456)) > /data/abmmeta/endofparts
 endofpart=$(cat /data/abmmeta/endofparts)
 
-#Write partition table
-sgdisk /dev/mmcblk1 < /data/abmmeta/pt.sfdisk
+#Umount abmmeta and sync pt
+umount /data/abmmeta
+blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 
 #Find partition number 
-datapart=$(echo $(ls /dev/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
+systempart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
 
 #Format partition
-mkfs.ext4 "/dev/mmcblk1p$datapart"
+true | mkfs.ext4 "/dev/block/mmcblk1p$systempart"
+
+#Write partition table
+sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$(($endofpart + 1)):+4194304 /dev/block/mmcblk1
+
+#Umount abmmeta and sync pt
+umount /data/abmmeta
+blockdev --rereadpt /dev/block/mmcblk1; sleep 3
+mount /dev/block/mmcblk1p1 /data/abmmeta
+
+#Modify endofpart
+echo $(($endofpart + 1+4194304)) > /data/abmmeta/endofparts
+
+#Find partition number 
+datapart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
+
+#Format partition
+true | mkfs.ext4 "/dev/block/mmcblk1p$datapart"
 
 #write image
 dd if="$2" of="/dev/block/mmcblk1p$systempart"
