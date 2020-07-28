@@ -36,10 +36,10 @@ endofpart=$(cat /data/abmmeta/endofparts)
 
 
 #Write partition table
-sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$(($endofpart + 1)):+6291456 /dev/block/mmcblk1
+sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$(($endofpart + 1)):+7340032 /dev/block/mmcblk1
 
 #Modify endofpart
-echo $(($endofpart + 1+6291456)) > /data/abmmeta/endofparts
+echo $(($endofpart + 1+7340032)) > /data/abmmeta/endofparts
 endofpart=$(cat /data/abmmeta/endofparts)
 
 #Umount abmmeta and sync pt
@@ -73,23 +73,21 @@ true | mkfs.ext4 "/dev/block/mmcblk1p$datapart"
 dd if="$2" of="/dev/block/mmcblk1p$systempart"
 
 #Copy dtb
-dtc -O dtb -o /sdcard/abm/tmp/boot/dtbdump_1.dtb /sdcard/abm/tmp/dtpatch/dtb.dtb
+cp /sdcard/abm/tmp/boot/dtbdump_1.dtb "/data/bootset/$1/dtb.dtb"
 
 #Copy kernel
-cp /sdcard/abm/tmp/boot/kernel "/data/bootset/$2/zImage"
+cp /sdcard/abm/tmp/boot/kernel "/data/bootset/$1/zImage"
 
 #Copy rd
-cp /sdcard/abm/tmp/boot/boot.img-ramdisk.gz "/data/bootset/$2/initrd.cpio.gz"
+cp /sdcard/abm/tmp/boot/boot.img-ramdisk.gz "/data/bootset/$1/initrd.cpio.gz"
 
-echo "systempart=/dev/mmcblk1p$systempart datapart=/dev/mmcblk1p$datapart" >> /sdcard/abm/tmp/boot/boot.img-cmdline
 #Create entry
-cmdline=$(cat /sdcard/abm/tmp/boot/boot.img-cmdline)
-cat << EOF >> /data/bootset/lk2nd/entries/entry"$5".conf
+cat << EOF >> /data/bootset/db/entries/entry"$5".conf
   title      $4
   linux      $1/zImage
   initrd     $1/initrd.cpio.gz
   dtb        $1/dtb.dtb
-  options    $cmdline
+  options    bootopt=64S3,32N2,64N2 androidboot.seliux=permissive systempart=/dev/mmcblk1p$systempart datapart=/dev/mmcblk1p$datapart 
 EOF
 
 #Clean up
