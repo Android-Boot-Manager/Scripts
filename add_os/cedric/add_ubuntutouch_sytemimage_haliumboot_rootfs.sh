@@ -100,16 +100,16 @@ umount /data/abm/mnt
 
 
 #Copy dtb
-cp /sdcard/abm/tmp/dtpatch/dtb.dtb "/cache/$1/dtb.dtb"
+cp /sdcard/abm/tmp/dtpatch/dtb.dtb "/data/bootset/$1/dtb.dtb"
 
 #Copy kernel
-cp /sdcard/abm/tmp/boot/boot.img-zImage "/cache/$1/zImage"
+cp /sdcard/abm/tmp/boot/boot.img-zImage "/data/bootset/$1/zImage"
 
 #Copy rd
-cp /sdcard/abm/tmp/boot/boot.img-ramdisk.gz "/cache/$1/initrd.cpio.gz"
+cp /sdcard/abm/tmp/boot/boot.img-ramdisk.gz "/data/bootset/$1/initrd.cpio.gz"
 
 #Create entry
-cat << EOF >> /cache/db/entries/entry"$5".conf
+cat << EOF >> /data/bootset/lk2nd/entries/entry"$5".conf
   title      $4
   linux      $1/zImage
   initrd     $1/initrd.cpio.gz
