@@ -22,7 +22,8 @@ cp "$3" /sdcard/abm/tmp/boot/boot.img
 unpackbootimg -i /sdcard/abm/tmp/boot/boot.img -o /sdcard/abm/tmp/boot/
 
 #Copy dt
-cp /sdcard/abm/tmp/boot/boot.img-dt /sdcard/abm/tmp/dt/dt
+cp /sdcard/abm/tmp/boot/boot.img-dt /sdcard/abm/tmp/dt/dtlz4
+lz4 -d /sdcard/abm/tmp/dt/dtlz4 /sdcard/abm/tmp/dt/dt
 
 #Go to dt dir, ectract dtb and go back
 cwd=$(pwd)
@@ -54,7 +55,7 @@ endofpart=$(cat /data/abmmeta/endofparts)
 
 #Write partition table
 # shellcheck disable=SC2012
-sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$(($endofpart + 1)):+7340032 /dev/block/mmcblk1
+sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$(($endofpart + 1)):+7340032 --typecode=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):8305 /dev/block/mmcblk1
 
 #Modify endofpart
 echo $((endofpart + 1+7340032)) > /data/abmmeta/endofparts
@@ -73,10 +74,9 @@ true | mkfs.ext4 "/dev/block/mmcblk1p$systempart"
 
 #Write partition table
 # shellcheck disable=SC2012
-sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$(($endofpart + 1)):+4194304 /dev/block/mmcblk1
+sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$(($endofpart + 1)):+4194304 --typecode=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):8302 /dev/block/mmcblk1
 
-#Umount abmmeta and sync pt
-umount /data/abmmeta
+#sync pt
 blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 mount /dev/block/mmcblk1p1 /data/abmmeta
 
@@ -115,7 +115,7 @@ cat << EOF >> /data/bootset/lk2nd/entries/entry"$5".conf
   linux      $1/zImage
   initrd     $1/initrd.cpio.gz
   dtb        $1/dtb.dtb
-  options    bootopt=64S3,32N2,64N2 androidboot.selinux=permissive systempart=/dev/mmcblk1p$systempart datapart=/dev/mmcblk1p$datapart 
+  options    androidboot.selinux=permissive systempart=/dev/mmcblk1p$systempart datapart=/dev/mmcblk1p$datapart 
 EOF
 
 #Clean up
