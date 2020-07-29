@@ -36,7 +36,8 @@ endofpart=$(cat /data/abmmeta/endofparts)
 
 
 #Write partition table
-sgdisk --new=$(($(find /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$((endofpart + 1)):+7340032 /dev/block/mmcblk1
+# shellcheck disable=SC2012
+sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$((endofpart + 1)):+7340032 /dev/block/mmcblk1
 
 #Modify endofpart
 echo $((endofpart + 1+7340032)) > /data/abmmeta/endofparts
@@ -47,13 +48,15 @@ umount /data/abmmeta
 blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 
 #Find partition number 
-systempart=$(find /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')
+# shellcheck disable=SC2012
+systempart=$(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')
 
 #Format partition
 true | mkfs.ext4 "/dev/block/mmcblk1p$systempart"
 
 #Write partition table
-sgdisk --new=$(($(find /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$((endofpart + 1)):+4194304 /dev/block/mmcblk1
+# shellcheck disable=SC2012
+sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$((endofpart + 1)):+4194304 /dev/block/mmcblk1
 
 #Umount abmmeta and sync pt
 umount /data/abmmeta
@@ -64,7 +67,8 @@ mount /dev/block/mmcblk1p1 /data/abmmeta
 echo $((endofpart + 1+4194304)) > /data/abmmeta/endofparts
 
 #Find partition number 
-datapart=$(find /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')
+# shellcheck disable=SC2012
+datapart=$(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')
 
 #Format partition
 true | mkfs.ext4 "/dev/block/mmcblk1p$datapart"
