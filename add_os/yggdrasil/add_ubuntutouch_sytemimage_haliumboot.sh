@@ -34,10 +34,9 @@ mount /dev/block/mmcblk1p1 /data/abmmeta
 #Get end of last partition
 endofpart=$(cat /data/abmmeta/endofparts)
 
-
 #Write partition table
 # shellcheck disable=SC2012
-sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$((endofpart + 1)):+7340032 /dev/block/mmcblk1
+sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$(($endofpart + 1)):+7340032 /dev/block/mmcblk1
 
 #Modify endofpart
 echo $((endofpart + 1+7340032)) > /data/abmmeta/endofparts
@@ -49,14 +48,14 @@ blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 
 #Find partition number 
 # shellcheck disable=SC2012
-systempart=$(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')
+systempart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
 
 #Format partition
 true | mkfs.ext4 "/dev/block/mmcblk1p$systempart"
 
 #Write partition table
 # shellcheck disable=SC2012
-sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$((endofpart + 1)):+4194304 /dev/block/mmcblk1
+sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$(($endofpart + 1)):+4194304 /dev/block/mmcblk1
 
 #Umount abmmeta and sync pt
 umount /data/abmmeta
@@ -68,7 +67,8 @@ echo $((endofpart + 1+4194304)) > /data/abmmeta/endofparts
 
 #Find partition number 
 # shellcheck disable=SC2012
-datapart=$(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')
+datapart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
+
 
 #Format partition
 true | mkfs.ext4 "/dev/block/mmcblk1p$datapart"
@@ -76,17 +76,18 @@ true | mkfs.ext4 "/dev/block/mmcblk1p$datapart"
 #write image
 dd if="$2" of="/dev/block/mmcblk1p$systempart"
 
+mkdir "/cache/$1"
 #Copy dtb
-cp /sdcard/abm/tmp/boot/dtbdump_1.dtb "/data/bootset/$1/dtb.dtb"
+cp /sdcard/abm/tmp/boot/dtbdump_1.dtb "/cache/$1/dtb.dtb"
 
 #Copy kernel
-cp /sdcard/abm/tmp/boot/kernel "/data/bootset/$1/zImage"
+cp /sdcard/abm/tmp/boot/kernel "/cache/$1/zImage"
 
 #Copy rd
-cp haliumrd-sleep10.cpio.gz "/data/bootset/$1/initrd.cpio.gz"
+cp haliumrd-sleep10.cpio.gz "/cache/$1/initrd.cpio.gz"
 
 #Create entry
-cat << EOF >> /data/bootset/db/entries/entry"$5".conf
+cat << EOF >> /cache/db/entries/entry"$5".conf
   title      $4
   linux      $1/zImage
   initrd     $1/initrd.cpio.gz
