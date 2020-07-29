@@ -36,10 +36,10 @@ endofpart=$(cat /data/abmmeta/endofparts)
 
 
 #Write partition table
-sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$(($endofpart + 1)):+7340032 /dev/block/mmcblk1
+sgdisk --new=$(($(find /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$((endofpart + 1)):+7340032 /dev/block/mmcblk1
 
 #Modify endofpart
-echo $(($endofpart + 1+7340032)) > /data/abmmeta/endofparts
+echo $((endofpart + 1+7340032)) > /data/abmmeta/endofparts
 endofpart=$(cat /data/abmmeta/endofparts)
 
 #Umount abmmeta and sync pt
@@ -47,13 +47,13 @@ umount /data/abmmeta
 blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 
 #Find partition number 
-systempart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
+systempart=$(find /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')
 
 #Format partition
 true | mkfs.ext4 "/dev/block/mmcblk1p$systempart"
 
 #Write partition table
-sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$(($endofpart + 1)):+4194304 /dev/block/mmcblk1
+sgdisk --new=$(($(find /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$((endofpart + 1)):+4194304 /dev/block/mmcblk1
 
 #Umount abmmeta and sync pt
 umount /data/abmmeta
@@ -61,10 +61,10 @@ blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 mount /dev/block/mmcblk1p1 /data/abmmeta
 
 #Modify endofpart
-echo $(($endofpart + 1+4194304)) > /data/abmmeta/endofparts
+echo $((endofpart + 1+4194304)) > /data/abmmeta/endofparts
 
 #Find partition number 
-datapart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
+datapart=$(find /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')
 
 #Format partition
 true | mkfs.ext4 "/dev/block/mmcblk1p$datapart"
