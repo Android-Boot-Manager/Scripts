@@ -25,7 +25,8 @@ cp /sdcard/abm/tmp/rom/boot.img /sdcard/abm/tmp/boot
 unpackbootimg -i /sdcard/abm/tmp/boot/boot.img -o /sdcard/abm/tmp/boot/
 
 #Copy dt
-cp /sdcard/abm/tmp/boot/boot.img-dt /sdcard/abm/tmp/dt/dt
+cp /sdcard/abm/tmp/boot/boot.img-dt /sdcard/abm/tmp/dt/dtlz4
+lz4 -d /sdcard/abm/tmp/dt/dtlz4 /sdcard/abm/tmp/dt/dt
 
 #Go to dt dir, ectract dtb and go back
 cwd=$(pwd)
