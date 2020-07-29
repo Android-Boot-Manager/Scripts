@@ -114,7 +114,7 @@ cat << EOF >> /data/bootset/lk2nd/entries/entry"$5".conf
   linux      $1/zImage
   initrd     $1/initrd.cpio.gz
   dtb        $1/dtb.dtb
-  options    bootopt=64S3,32N2,64N2 androidboot.seliux=permissive systempart=/dev/mmcblk1p$systempart datapart=/dev/mmcblk1p$datapart 
+  options    bootopt=64S3,32N2,64N2 androidboot.selinux=permissive systempart=/dev/mmcblk1p$systempart datapart=/dev/mmcblk1p$datapart 
 EOF
 
 #Clean up
