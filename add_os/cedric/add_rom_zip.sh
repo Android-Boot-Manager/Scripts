@@ -57,12 +57,12 @@ mount /dev/block/mmcblk1p1 /data/abmmeta
 #Get end of last partition
 endofpart=$(cat /data/abmmeta/endofparts)
 
-echo $(($endofpart + 1+4194304)) > /data/abmmeta/endofparts
+echo $(($endofpart + 1+8388608)) > /data/abmmeta/endofparts
 
 umount /data/abmmeta
 
 #Write partition table
-sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$' ) + 1)):$(($endofpart + 1)):+4194304 /dev/block/mmcblk1
+sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$' ) + 1)):$(($endofpart + 1)):+8388608 /dev/block/mmcblk1
 
 partprobe /dev/block/mmcblk1; sleep 2
 
