@@ -119,7 +119,7 @@ cat << EOF >> /data/bootset/lk2nd/entries/entry"$5".conf
   linux      $1/zImage
   initrd     $1/initrd.cpio.gz
   dtb        $1/dtb.dtb
-  options    androidboot.selinux=permissive systempart=/dev/mmcblk1p$systempart datapart=/dev/mmcblk1p$datapart 
+  options    androidboot.selinux=permissive systempart=/dev/mmcblk1p$systempart datapart=/dev/mmcblk1p$datapart console=tty0
 EOF
 
 #Clean up
