@@ -97,6 +97,10 @@ mount "/dev/block/mmcblk1p$systempart" /data/abm/mnt
 #write image
 tar -xvf "$6" -C /data/abm/mnt
 cp "$2" /data/abm/mnt/var/lib/lxc/android/system.img
+mkdir -p /data/abm/mnt/android
+mkdir -p /data/abm/mnt/userdata
+mkdir -p /data/abm/mnt/lib/modules
+ln -sf /android/data /data/abm/mnt/data
 umount /data/abm/mnt
 
 
