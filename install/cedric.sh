@@ -33,7 +33,6 @@ cp /sdcard/abm/temp/boot/stockboot.img-zImage "/data/bootset/$2/zImage"
 cp /sdcard/abm/temp/boot/stockboot.img-ramdisk.gz "/data/bootset/$2/initrd.cpio.gz"
 
 # Create entry
-cmdline=$(cat /proc/cmdline)
 cat << EOF >> /data/bootset/lk2nd/lk2nd.conf
    default    Entry 01
    timeout    5
@@ -48,10 +47,10 @@ cat << EOF >> /data/bootset/lk2nd/entries/entry01.conf
   linux      $2/zImage
   initrd     $2/initrd.cpio.gz
   dtb        $2/dtb.dtb
-  options    $cmdline
+  options    console=null
   xRom       real
-  xRomSystem /dev/block/bootdevice/by-name/system
-  xRomData   /dev/block/bootdevice/by-name/data
+  xRomSystem real
+  xRomData   real
 EOF
 
 # Unmount bootset, and sync cache
