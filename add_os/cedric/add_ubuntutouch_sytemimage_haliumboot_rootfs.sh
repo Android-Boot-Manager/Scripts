@@ -106,7 +106,7 @@ sed -i 's/manual/start on startup/g' "/data/abm/mnt/etc/init/usb-tethering.conf"
 mkdir -p "/data/abm/mnt/android/firmware"
 mkdir -p "/data/abm/mnt/android/persist"
 mkdir -p "/data/abm/mnt/userdata"
-for link in cache data factory firmware persist system odm product metadata; do ln -s /data/abm/mnt/$link "/data/abm/mnt/$link"; done
+for link in cache data factory firmware persist system odm product metadata; do ln -s /android/$link "/data/abm/mnt/$link"; done
 ln -s /system/lib/modules "/data/abm/mnt/lib/modules"
 ln -s /android/vendor "/data/abm/mnt/vendor"
 rm -f "/data/abm/mnt/etc/mtab"
