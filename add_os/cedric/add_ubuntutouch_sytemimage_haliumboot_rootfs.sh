@@ -97,12 +97,22 @@ mount "/dev/block/mmcblk1p$systempart" /data/abm/mnt
 #write image
 tar -xvf "$6" -C /data/abm/mnt
 cp "$2" /data/abm/mnt/var/lib/lxc/android/system.img
-mkdir -p /data/abm/mnt/android
-mkdir -p /data/abm/mnt/userdata
-mkdir -p /data/abm/mnt/lib/modules
-ln -sf /android/data /data/abm/mnt/data
-umount /data/abm/mnt
 
+# halium postinstall
+touch /data/abm/mnt/home/phablet/.display-mir
+sed -i 's/PasswordAuthentication=no/PasswordAuthentication=yes/g' "/data/abm/mnt/etc/init/ssh.override"
+sed -i 's/manual/start on startup/g' "/data/abm/mnt/etc/init/ssh.override"
+sed -i 's/manual/start on startup/g' "/data/abm/mnt/etc/init/usb-tethering.conf"
+mkdir -p "/data/abm/mnt/android/firmware"
+mkdir -p "/data/abm/mnt/android/persist"
+mkdir -p "/data/abm/mnt/userdata"
+for link in cache data factory firmware persist system odm product metadata; do ln -s /data/abm/mnt/$link "/data/abm/mnt/$link"; done
+ln -s /system/lib/modules "/data/abm/mnt/lib/modules"
+ln -s /android/vendor "/data/abm/mnt/vendor"
+rm -f "/data/abm/mnt/etc/mtab"
+ln -s /proc/mounts "/data/abm/mnt/etc/mtab"
+
+umount /data/abm/mnt
 
 #Copy dtb
 cp /sdcard/abm/tmp/dtpatch/dtb.dtb "/data/bootset/$1/dtb.dtb"
