@@ -55,7 +55,7 @@ endofpart=$(cat /data/abmmeta/endofparts)
 
 #Write partition table
 # shellcheck disable=SC2012
-sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$(($endofpart + 1)):+7340032 --typecode=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):8305 /dev/block/mmcblk1
+sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):$(($endofpart + 1)):+7340032 --typecode=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8305 /dev/block/mmcblk1
 
 #Modify endofpart
 echo $((endofpart + 1+7340032)) > /data/abmmeta/endofparts
@@ -67,14 +67,14 @@ blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 
 #Find partition number 
 # shellcheck disable=SC2012
-systempart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
+systempart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')
 
 #Format partition
 true | mkfs.ext4 "/dev/block/mmcblk1p$systempart"
 
 #Write partition table
 # shellcheck disable=SC2012
-sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):$(($endofpart + 1)):+4194304 --typecode=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')+1)):8302 /dev/block/mmcblk1
+sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):$(($endofpart + 1)):+4194304 --typecode=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8302 /dev/block/mmcblk1
 
 #sync pt
 blockdev --rereadpt /dev/block/mmcblk1; sleep 3
@@ -85,7 +85,7 @@ echo $((endofpart + 1+4194304)) > /data/abmmeta/endofparts
 
 #Find partition number 
 # shellcheck disable=SC2012
-datapart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
+datapart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')
 
 
 #Format partition
@@ -132,4 +132,4 @@ cat << EOF >> /data/bootset/lk2nd/entries/entry"$5".conf
 EOF
 
 #Clean up
-#rm -r /sdcard/abm/tmp
+rm -r /sdcard/abm/tmp
