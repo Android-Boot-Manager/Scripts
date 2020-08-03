@@ -64,7 +64,7 @@ umount /data/abmmeta
 #Write partition table
 #TODO: Create data
 # shellcheck disable=SC2012
-sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$' ) + 1)):$((endofpart + 1)):+8388608 /dev/block/mmcblk1
+sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$' ) + 1)):$((endofpart + 1)):+8388608 --typecode=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8305 /dev/block/mmcblk1
 
 partprobe /dev/block/mmcblk1; sleep 2
 
@@ -72,7 +72,7 @@ mount /dev/block/mmcblk1p1 /data/abmmeta
 
 #Find partition number 
 # shellcheck disable=SC2012
-systempart=$(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Eo '[0-9]+$')
+systempart=$(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')
 
 #Format partition
 true | mkfs.ext4 "/dev/block/mmcblk1p$systempart"
