@@ -46,11 +46,11 @@ bid=${bid:2:4}
 
 
 #Choose correct dtb
-cdtb=$(ls /sdcard/abm/tmp/dt/*"$bid"*)
-cp "$cdtb" /sdcard/abm/tmp/dt/dtb.dtb
+cdtb=$(ls /sdcard/abm/temp/dt/*"$bid"*)
+cp "$cdtb" /sdcard/abm/temp/dt/dtb.dtb
 
 #Decompile dtb
-./dtc -I dtb -O dts -o /sdcard/abm/tmp/dt/dtb.dts /sdcard/abm/tmp/dt/dtb.dtb
+./dtc -I dtb -O dts -o /sdcard/abm/temp/dt/dtb.dts /sdcard/abm/temp/dt/dtb.dtb
 
 # Copy kernel
 cp /sdcard/abm/temp/boot/stockboot.img-zImage "/data/bootset/$2/zImage"
