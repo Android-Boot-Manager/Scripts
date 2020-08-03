@@ -26,6 +26,7 @@ mkdir -p /sdcard/abm/temp/boot
 # Copy device tree
 mkdir -p /sdcard/abm/temp/dt
 cp /sys/firmware/fdt "/data/bootset/$2/dtb.dtb"
+cp /sys/firmware/fdt /data/bootset/msm8937-motorola-cedric.dtb
 cp /sdcard/abm/temp/boot/stockboot.img-dt /sdcard/abm/temp/dt/dt
 cwd=$(pwd)
 # shellcheck disable=SC2164
