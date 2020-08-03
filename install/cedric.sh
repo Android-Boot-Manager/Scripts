@@ -97,4 +97,4 @@ umount /data/bootset
 EOF
 
 # Clean up
-#rm -r /sdcard/abm/temp
+rm -r /sdcard/abm/temp
