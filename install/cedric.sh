@@ -20,13 +20,39 @@ mount -t ext4 /dev/block/bootdevice/by-name/oem /data/bootset
 mkdir -p /data/bootset/lk2nd/entries
 mkdir -p "/data/bootset/$2"
 
+mkdir -p /sdcard/abm/temp/boot
+./unpackbootimg -i /sdcard/abm/stockboot.img -o /sdcard/abm/temp/boot
+
 # Copy device tree
+mkdir -p /sdcard/abm/temp/dt
 cp /sys/firmware/fdt "/data/bootset/$2/dtb.dtb"
-cp /sys/firmware/fdt /data/bootset/msm8937-motorola-cedric.dtb
+cp /sdcard/abm/temp/boot/stockboot.img-dt /sdcard/abm/temp/dt/dt
+cwd=$(pwd)
+# shellcheck disable=SC2164
+cd /sdcard/abm/temp/dt/
+"$cwd/dtimgextract" dt
+# shellcheck disable=SC2164
+cd "$cwd"
+
+#Get current rom DTB
+cp /sys/firmware/fdt /sdcard/abm/temp/dt/current.dtb
+dtc -I dtb -O dts -o /sdcard/abm/temp/dt/current.dts /sdcard/abm/temp/dt/current.dtb
+
+#Get board id
+bid=$(grep board-id < /sdcard/abm/temp/dt/current.dts)
+bid=$(echo "$bid" | awk '{print $4}')
+# shellcheck disable=SC2039
+bid=${bid:2:4}
+
+
+#Choose correct dtb
+cdtb=$(ls /sdcard/abm/tmp/dt/*"$bid"*)
+cp "$cdtb" /sdcard/abm/tmp/dt/dtb.dtb
+
+#Decompile dtb
+./dtc -I dtb -O dts -o /sdcard/abm/tmp/dt/dtb.dts /sdcard/abm/tmp/dt/dtb.dtb
 
 # Copy kernel
-mkdir -p /sdcard/abm/temp/boot
-./unpackbootimg -i /sdcard/abm/stockboot.img -o /sdcard/abm/temp/boot 
 cp /sdcard/abm/temp/boot/stockboot.img-zImage "/data/bootset/$2/zImage"
 
 # Copy rd
@@ -68,4 +94,4 @@ umount /data/bootset
 EOF
 
 # Clean up
-rm -r /sdcard/abm/temp
+#rm -r /sdcard/abm/temp
