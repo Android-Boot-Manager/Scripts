@@ -36,7 +36,7 @@ cd "$cwd"
 
 #Get current rom DTB
 cp /sys/firmware/fdt /sdcard/abm/temp/dt/current.dtb
-dtc -I dtb -O dts -o /sdcard/abm/temp/dt/current.dts /sdcard/abm/temp/dt/current.dtb
+./dtc -I dtb -O dts -o /sdcard/abm/temp/dt/current.dts /sdcard/abm/temp/dt/current.dtb
 
 #Get board id
 bid=$(grep board-id < /sdcard/abm/temp/dt/current.dts)
