@@ -79,10 +79,11 @@ true | mkfs.ext4 "/dev/block/mmcblk1p$systempart"
 
 #Patch dts
 #TODO: Change data
-sed -i "s/\/dev\/block\/platform\/soc\/7824900.sdhci\/by-name\/system/\/dev\/block\/platform\/soc\/7864900.sdhci\/mmcblk1p$systempart/g" /sdcard/abm/tmp/dtpatch/dtb.dts
+sed "s/\/dev\/block\/platform\/soc\/7824900.sdhci\/by-name\/system/\/dev\/block\/platform\/soc\/7864900.sdhci\/mmcblk1p$systempart/g" /sdcard/abm/tmp/dtpatch/dtb.dts > /sdcard/abm/tmp/dtpatch/current.dts
+patch -i /data/bootset/dts.patch -d /sdcard/abm/tmp/dtpatch/
 
 #Compile dts
-dtc -O dtb -o "/data/bootset/$1/dtb.dtb" /sdcard/abm/tmp/dtpatch/dtb.dts
+dtc -O dtb -o "/data/bootset/$1/dtb.dtb" /sdcard/abm/tmp/dtpatch/current.dts
 
 #Copy kernel
 cp /sdcard/abm/tmp/boot/boot.img-zImage "/data/bootset/$1/zImage"
