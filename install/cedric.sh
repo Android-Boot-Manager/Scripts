@@ -52,6 +52,8 @@ cp "$cdtb" /sdcard/abm/temp/dt/dtb.dtb
 #Decompile dtb
 ./dtc -I dtb -O dts -o /sdcard/abm/temp/dt/dtb.dts /sdcard/abm/temp/dt/dtb.dtb
 
+diff /sdcard/abm/temp/dt/dtb.dts /sdcard/abm/temp/dt/current.dts > /data/bootset/dts.patch
+
 # Copy kernel
 cp /sdcard/abm/temp/boot/stockboot.img-zImage "/data/bootset/$2/zImage"
 
