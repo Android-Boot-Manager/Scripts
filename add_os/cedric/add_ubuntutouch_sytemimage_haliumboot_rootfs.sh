@@ -49,7 +49,7 @@ cp "$cdtb" /sdcard/abm/tmp/dtpatch/dtb.dtb
 
 #Write partition table
 # shellcheck disable=SC2012
-sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')+1))::+7340032 --typecode=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8305 /dev/block/mmcblk1
+sgdisk --new=::+7340032 --typecode=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8305 /dev/block/mmcblk1
 blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 
 #Find partition number 
@@ -61,7 +61,7 @@ true | mkfs.ext4 "/dev/block/mmcblk1p$systempart"
 
 #Write partition table
 # shellcheck disable=SC2012
-sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')+1))::+4194304 --typecode=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8302 /dev/block/mmcblk1
+sgdisk --new=::+4194304 --typecode=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8302 /dev/block/mmcblk1
 blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 
 #Find partition number 
