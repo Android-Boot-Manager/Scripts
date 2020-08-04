@@ -51,24 +51,13 @@ cp "$cdtb" /sdcard/abm/tmp/dtpatch/dtb.dtb
 
 #Decompile dtb
 dtc -I dtb -O dts -o /sdcard/abm/tmp/dtpatch/dtb.dts /sdcard/abm/tmp/dtpatch/dtb.dtb
-#Mount metadata
-mount /dev/block/mmcblk1p1 /data/abmmeta
-
-#Get end of last partition
-endofpart=$(cat /data/abmmeta/endofparts)
-
-echo $((endofpart + 1+8388608)) > /data/abmmeta/endofparts
-
-umount /data/abmmeta
 
 #Write partition table
 #TODO: Create data
 # shellcheck disable=SC2012
-sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$' ) + 1)):$((endofpart + 1)):+8388608 --typecode=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8305 /dev/block/mmcblk1
+sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$' ) + 1))::+8388608 --typecode=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8305 /dev/block/mmcblk1
 
 partprobe /dev/block/mmcblk1; sleep 2
-
-mount /dev/block/mmcblk1p1 /data/abmmeta
 
 #Find partition number 
 # shellcheck disable=SC2012
