@@ -15,6 +15,5 @@ else
     rm -r /data/abmmeta
     exit 1
 fi
-echo "34816" > /data/abmmeta/endofparts
 touch /data/abmmeta/abm-drive.cfg
 umount /data/abmmeta
