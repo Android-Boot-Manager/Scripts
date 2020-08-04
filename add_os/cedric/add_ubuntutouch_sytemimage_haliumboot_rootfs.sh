@@ -49,24 +49,24 @@ cp "$cdtb" /sdcard/abm/tmp/dtpatch/dtb.dtb
 
 #Write partition table
 # shellcheck disable=SC2012
-sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')+1))::+7340032 --typecode=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8305 /dev/block/mmcblk1
+sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')+1))::+7340032 --typecode=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8305 /dev/block/mmcblk1
 blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 
 #Find partition number 
 # shellcheck disable=SC2012
-systempart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')
+systempart=$(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')
 
 #Format partition
 true | mkfs.ext4 "/dev/block/mmcblk1p$systempart"
 
 #Write partition table
 # shellcheck disable=SC2012
-sgdisk --new=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')+1))::+4194304 --typecode=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8302 /dev/block/mmcblk1
+sgdisk --new=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')+1))::+4194304 --typecode=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8302 /dev/block/mmcblk1
 blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 
 #Find partition number 
 # shellcheck disable=SC2012
-datapart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')
+datapart=$(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')
 
 
 #Format partition
