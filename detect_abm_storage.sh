@@ -3,7 +3,7 @@
 mkdir -p /data/abm/mnt
 
 if [ -b /dev/block/sda1 ] && [[ $(lsblk | grep sda1 | grep ext4) ]]; then
-    mount /dev/block/sda1 /data/abm/mnt
+    mount -o ro /dev/block/sda1 /data/abm/mnt
     if [ -e /data/abm/mnt/abm-drive.cfg ]; then
         echo "usb"
     fi
@@ -11,7 +11,7 @@ if [ -b /dev/block/sda1 ] && [[ $(lsblk | grep sda1 | grep ext4) ]]; then
 fi
 
 if [ -b /dev/block/mmcblk1p1 ]  && [[ $(lsblk | grep mmcblk1p1 | grep ext4) ]]; then
-    mount /dev/block/mmcblk1p1 /data/abm/mnt
+    mount -o ro /dev/block/mmcblk1p1 /data/abm/mnt
     if [ -e /data/abm/mnt/abm-drive.cfg ]; then
         echo "sd"
     fi
