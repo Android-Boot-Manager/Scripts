@@ -46,6 +46,8 @@ bid=${bid:2:4}
 #Choose correct dtb
 cdtb=$(ls /sdcard/abm/tmp/dt/*"$bid"*)
 cp "$cdtb" /sdcard/abm/tmp/dtpatch/dtb.dtb
+dtc -I dtb -O dts -o /sdcard/abm/tmp/dtpatch/dtb.dts /sdcard/abm/tmp/dtpatch/dtb.dtb
+sed -rz "s/chosen {[^}]*}\;/chosen {\n\t}\;/g" /sdcard/abm/tmp/dtpatch/dtb.dts > /sdcard/abm/tmp/dtpatch/current.dts
 
 #Write partition table
 # shellcheck disable=SC2012
