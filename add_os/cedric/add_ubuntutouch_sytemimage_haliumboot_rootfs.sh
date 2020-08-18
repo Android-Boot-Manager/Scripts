@@ -51,7 +51,7 @@ sed -rz "s/chosen {[^}]*}\;/chosen {\n\t}\;/g" /sdcard/abm/tmp/dtpatch/dtb.dts >
 
 #Write partition table
 # shellcheck disable=SC2012
-sgdisk --new=::+7340032 --typecode=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8305 /dev/block/mmcblk1
+sgdisk --new=0::+7340032 --typecode=0:8305 /dev/block/mmcblk1
 blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 
 #Find partition number 
@@ -63,7 +63,7 @@ true | mkfs.ext4 "/dev/block/mmcblk1p$systempart"
 
 #Write partition table
 # shellcheck disable=SC2012
-sgdisk --new=::+4194304 --typecode=$(($(ls /dev/block/mmcblk1p* | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8302 /dev/block/mmcblk1
+sgdisk --new=0::+4194304 --typecode=0:8302 /dev/block/mmcblk1
 blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 
 #Find partition number 
