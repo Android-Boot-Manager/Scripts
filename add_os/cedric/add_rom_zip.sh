@@ -55,7 +55,7 @@ dtc -I dtb -O dts -o /sdcard/abm/tmp/dtpatch/dtb.dts /sdcard/abm/tmp/dtpatch/dtb
 #Write partition table
 #TODO: Create data
 # shellcheck disable=SC2012
-sgdisk --new=::+8388608 --typecode=$(($(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')+1)):8305 /dev/block/mmcblk1
+sgdisk --new=0::+8388608 --typecode=0:8305 /dev/block/mmcblk1
 
 partprobe /dev/block/mmcblk1; sleep 2
 
