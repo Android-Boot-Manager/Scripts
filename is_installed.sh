@@ -1,3 +1,3 @@
 #!/system/bin/sh
 
-cat /proc/cndline | grep ABM.bootloader=1
+cat /proc/cmdline | grep ABM.bootloader=1
