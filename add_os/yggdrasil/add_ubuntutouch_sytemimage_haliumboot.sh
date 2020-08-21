@@ -38,7 +38,7 @@ blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 
 #Find partition number 
 # shellcheck disable=SC2012
-systempart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')
+systempart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
 
 #Format partition
 true | mkfs.ext4 "/dev/block/mmcblk1p$systempart"
@@ -52,7 +52,7 @@ blockdev --rereadpt /dev/block/mmcblk1; sleep 3
 
 #Find partition number 
 # shellcheck disable=SC2012
-datapart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Ec '[0-9]+$')
+datapart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
 
 
 #Format partition
@@ -69,7 +69,7 @@ cp /sdcard/abm/tmp/boot/dtbdump_1.dtb "/cache/$1/dtb.dtb"
 cp /sdcard/abm/tmp/boot/kernel "/cache/$1/zImage"
 
 #Copy rd
-cp haliumrd-sleep10.cpio.gz "/cache/$1/initrd.cpio.gz"
+cp haliumrd-sleep10.cpio "/cache/$1/initrd.cpio.gz"
 
 ENTRYNUM=`find /cache/db/entries -name "entry*" | wc -l`
 ENTRYNUM=$((ENTRYNUM+1))
