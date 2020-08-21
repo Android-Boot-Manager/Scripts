@@ -61,26 +61,27 @@ true | mkfs.ext4 "/dev/block/mmcblk1p$datapart"
 #write image
 dd if="$2" of="/dev/block/mmcblk1p$systempart"
 
-mkdir "/cache/$1"
-#Copy dtb
-cp /sdcard/abm/tmp/boot/dtbdump_1.dtb "/cache/$1/dtb.dtb"
-
-#Copy kernel
-cp /sdcard/abm/tmp/boot/kernel "/cache/$1/zImage"
-
-#Copy rd
-cp haliumrd-sleep10.cpio "/cache/$1/initrd.cpio.gz"
-
 ENTRYNUM=`find /cache/db/entries -name "entry*" | wc -l`
 ENTRYNUM=$((ENTRYNUM+1))
+
+mkdir "/cache/$ENTRYNUM"
+#Copy dtb
+cp /sdcard/abm/tmp/boot/dtbdump_1.dtb "/cache/$ENTRYNUM/dtb.dtb"
+
+#Copy kernel
+cp /sdcard/abm/tmp/boot/kernel "/cache/$ENTRYNUM/zImage"
+
+#Copy rd
+cp haliumrd-sleep10.cpio "/cache/$ENTRYNUM/initrd.cpio.gz"
+
 
 
 #Create entry
 cat << EOF >> /cache/db/entries/entry"$ENTRYNUM".conf
   title      $4
-  linux      $1/zImage
-  initrd     $1/initrd.cpio.gz
-  dtb        $1/dtb.dtb
+  linux      $ENTRYNUM/zImage
+  initrd     $ENTRYNUM/initrd.cpio.gz
+  dtb        $ENTRYNUM/dtb.dtb
   options    bootopt=64S3,32N2,64N2 androidboot.seliux=permissive systempart=/dev/mmcblk1p$systempart datapart=/dev/mmcblk1p$datapart 
 EOF
 
