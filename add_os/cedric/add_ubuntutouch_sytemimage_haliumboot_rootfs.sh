@@ -105,8 +105,11 @@ cp /sdcard/abm/tmp/boot/boot.img-zImage "/data/bootset/$1/zImage"
 #Copy rd
 cp /sdcard/abm/tmp/boot/boot.img-ramdisk.gz "/data/bootset/$1/initrd.cpio.gz"
 
+ENTRYNUM=`find /data/bootset/lk2nd/entries -name "entry*" | wc -l`
+ENTRYNUM=$((ENTRYNUM+1))
+
 #Create entry
-cat << EOF >> /data/bootset/lk2nd/entries/entry"$5".conf
+cat << EOF >> /data/bootset/lk2nd/entries/entry"$ENTRYNUM".conf
   title      $4
   linux      $1/zImage
   initrd     $1/initrd.cpio.gz

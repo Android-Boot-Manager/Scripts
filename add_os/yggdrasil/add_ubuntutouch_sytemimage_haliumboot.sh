@@ -71,8 +71,12 @@ cp /sdcard/abm/tmp/boot/kernel "/cache/$1/zImage"
 #Copy rd
 cp haliumrd-sleep10.cpio.gz "/cache/$1/initrd.cpio.gz"
 
+ENTRYNUM=`find /cache/db/entries -name "entry*" | wc -l`
+ENTRYNUM=$((ENTRYNUM+1))
+
+
 #Create entry
-cat << EOF >> /cache/db/entries/entry"$5".conf
+cat << EOF >> /cache/db/entries/entry"$ENTRYNUM".conf
   title      $4
   linux      $1/zImage
   initrd     $1/initrd.cpio.gz
