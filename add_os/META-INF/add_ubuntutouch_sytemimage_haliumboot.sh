@@ -9,7 +9,9 @@ dialoginfo %installing_title% %select_halium_boot%
 dialogfile halium-boot
 dialoginfo %installing_title% %select_system_image%
 dialogfile systemimage
+dialoginfo %installing_title% Select recovery
+dialogfile recoveryimage
 dialogtext %enter_rom_name% ROM_name
 dialogloading Demo %installing_msg%
-global 'cd /data/data/org.androidbootmanager.app/assets/Toolkit/ && /data/data/org.androidbootmanager.app/assets/Scripts/add_os/yggdrasil/add_ubuntutouch_sytemimage_haliumboot.sh hi %systemimage% %halium-boot% "%ROM_name%" >/sdcard/abm/rom.log 2>&1' output
+global 'cd /data/data/org.androidbootmanager.app/assets/Toolkit/ && /data/data/org.androidbootmanager.app/assets/Scripts/add_os/yggdrasil/add_ubuntutouch_sytemimage_haliumboot.sh %recoveryimage% %systemimage% %halium-boot% "%ROM_name%" >/sdcard/abm/rom.log 2>&1' output
 dialogloadingquit
