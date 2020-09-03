@@ -10,6 +10,7 @@ mkdir -p /sdcard/abm/tmp
 mkdir -p /sdcard/abm/tmp/boot
 mkdir -p /sdcard/abm/tmp/recovery
 mkdir -p /sdcard/abm/tmp/recovery/rd
+mkdir -p /data/abm/tmp/recovery/rd
 
 #Copy boot
 cp "$3" /sdcard/abm/tmp/boot/boot.img
@@ -75,16 +76,16 @@ dd if="$2" of="/dev/block/mmcblk1p$systempart"
 
 ENTRYNUM=`find /cache/db/entries -name "entry*" | wc -l`
 ENTRYNUM=$((ENTRYNUM+1))
+mkdir "/cache/$ENTRYNUM"
 
 #Patch recovery
-(cd /sdcard/abm/tmp/recovery/rd && gunzip -c /sdcard/abm/tmp/recovery/boot.img-ramdisk.gz | cpio -i )
+(cd /data/abm/tmp/recovery/rd && gunzip -c /sdcard/abm/tmp/recovery/boot.img-ramdisk.gz | cpio -i )
 sed -i "s/\/dev\/block\/platform\/bootdevice\/by-name\/system/\/dev\/block\/mmcblk1p$systempart/g" /sdcard/abm/tmp/recovery/rd/fstab.mt6763
 sed -i "s/\/dev\/block\/platform\/bootdevice\/by-name\/userdata/\/dev\/block\/mmcblk1p$datapart/g" /sdcard/abm/tmp/recovery/rd/fstab.mt6763
 sed -i "s/\/dev\/block\/platform\/bootdevice\/by-name\/system/\/dev\/block\/mmcblk1p$systempart/g" /sdcard/abm/tmp/recovery/rd/etc/recovery.fstab
 sed -i "s/\/dev\/block\/platform\/bootdevice\/by-name\/userdata/\/dev\/block\/mmcblk1p$datapart/g" /sdcard/abm/tmp/recovery/rd/etc/recovery.fstab
-(cd /sdcard/abm/tmp/recovery/rd && find . | cpio -o -H newc | gzip > "/cache/$ENTRYNUM/initrdrecovery.cpio.gz")
+(cd /data/abm/tmp/recovery/rd && find . | cpio -o -H newc | gzip > "/cache/$ENTRYNUM/initrdrecovery.cpio.gz")
 
-mkdir "/cache/$ENTRYNUM"
 #Copy dtb
 cp /sdcard/abm/tmp/boot/dtbdump_1.dtb "/cache/$ENTRYNUM/dtb.dtb"
 
