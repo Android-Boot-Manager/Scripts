@@ -47,6 +47,8 @@ bid=${bid:2:4}
 cdtb=$(ls /sdcard/abm/tmp/dt/*"$bid"*)
 cp "$cdtb" /sdcard/abm/tmp/dtpatch/dtb.dtb
 dtc -I dtb -O dts -o /sdcard/abm/tmp/dtpatch/dtb.dts /sdcard/abm/tmp/dtpatch/dtb.dtb
+patch "/sdcard/abm/tmp/dtpatch/dtb.dts" < /data/bootset/dts.patch
+dtc -O dtb -o /sdcard/abm/tmp/dtpatch/dtb.dtb /sdcard/abm/tmp/dtpatch/dtb.dts
 sed -rz "s/chosen {[^}]*}\;/chosen {\n\t}\;/g" /sdcard/abm/tmp/dtpatch/dtb.dts > /sdcard/abm/tmp/dtpatch/current.dts
 
 #Write partition table
@@ -98,6 +100,7 @@ umount /data/abm/mnt
 
 #Copy dtb
 cp /sdcard/abm/tmp/dtpatch/dtb.dtb "/data/bootset/$1/dtb.dtb"
+
 
 #Copy kernel
 cp /sdcard/abm/tmp/boot/boot.img-zImage "/data/bootset/$1/zImage"
