@@ -13,10 +13,12 @@ mkdir -p /sdcard/abm/tmp/dtpatch
 mkdir -p /data/abm/mnt
 
 # Create folder for new OS
-mkdir -p "/data/bootset/$1"
+ENTRYNUM=`find /cache/db/entries -name "entry*" | wc -l`
+ENTRYNUM=$((ENTRYNUM+1))
+mkdir -p "/data/bootset/$ENTRYNUM"
 
 #Copy boot
-cp "$3" /sdcard/abm/tmp/boot/boot.img
+cp "$2" /sdcard/abm/tmp/boot/boot.img
 
 #Unpack boot
 unpackbootimg -i /sdcard/abm/tmp/boot/boot.img -o /sdcard/abm/tmp/boot/
@@ -80,8 +82,8 @@ true | mkfs.ext4 "/dev/block/mmcblk1p$datapart"
 mount "/dev/block/mmcblk1p$systempart" /data/abm/mnt
 
 #write image
-tar -xvf "$6" -C /data/abm/mnt
-cp "$2" /data/abm/mnt/var/lib/lxc/android/system.img
+tar -xvf "$4" -C /data/abm/mnt
+cp "$1" /data/abm/mnt/var/lib/lxc/android/system.img
 
 # halium postinstall
 touch /data/abm/mnt/home/phablet/.display-mir
@@ -99,24 +101,24 @@ ln -s /proc/mounts "/data/abm/mnt/etc/mtab"
 umount /data/abm/mnt
 
 #Copy dtb
-cp /sdcard/abm/tmp/dtpatch/dtb.dtb "/data/bootset/$1/dtb.dtb"
+cp /sdcard/abm/tmp/dtpatch/dtb.dtb "/data/bootset/$ENTRYNUM/dtb.dtb"
 
 
 #Copy kernel
-cp /sdcard/abm/tmp/boot/boot.img-zImage "/data/bootset/$1/zImage"
+cp /sdcard/abm/tmp/boot/boot.img-zImage "/data/bootset/$ENTRYNUM/zImage"
 
 #Copy rd
-cp /sdcard/abm/tmp/boot/boot.img-ramdisk.gz "/data/bootset/$1/initrd.cpio.gz"
+cp /sdcard/abm/tmp/boot/boot.img-ramdisk.gz "/data/bootset/$ENTRYNUM/initrd.cpio.gz"
 
 ENTRYNUM=`find /data/bootset/lk2nd/entries -name "entry*" | wc -l`
 ENTRYNUM=$((ENTRYNUM+1))
 
 #Create entry
 cat << EOF >> /data/bootset/lk2nd/entries/entry"$ENTRYNUM".conf
-  title      $4
-  linux      $1/zImage
-  initrd     $1/initrd.cpio.gz
-  dtb        $1/dtb.dtb
+  title      $3
+  linux      $ENTRYNUM/zImage
+  initrd     $ENTRYNUM/initrd.cpio.gz
+  dtb        $ENTRYNUM/dtb.dtb
   options    androidboot.selinux=permissive systempart=/dev/mmcblk1p$systempart datapart=/dev/mmcblk1p$datapart console=tty0
 EOF
 
