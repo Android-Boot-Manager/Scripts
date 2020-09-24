@@ -1,7 +1,6 @@
 #!/system/bin/sh
 
-# Script for installing Ubuntu Touch, with system image and halium boot for ABM. Parametrs: ROM folder name, system image path, haliumboot path,
-# ROM name in menu, entry number.
+# Script for installing SailfishOS, with system image and halium boot for ABM. Parametrs: ROM name, zip file path.
 
 PATH=.:$PATH
 # Create working dir
