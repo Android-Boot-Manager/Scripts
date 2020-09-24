@@ -8,20 +8,15 @@ PATH=.:$PATH
 mkdir -p /sdcard/abm
 mkdir -p /sdcard/abm/tmp
 mkdir -p /sdcard/abm/tmp/boot
-mkdir -p /sdcard/abm/tmp/recovery
-mkdir -p /sdcard/abm/tmp/recovery/rd
+
+# Create folder for new OS
+mkdir -p "/data/bootset/$1"
 
 #Copy boot
 cp "$3" /sdcard/abm/tmp/boot/boot.img
 
-#Copy recovery
-cp "$1" /sdcard/abm/tmp/recovery/boot.img
-
 #Unpack boot
 unpackbootimg -i /sdcard/abm/tmp/boot/boot.img -o /sdcard/abm/tmp/boot/
-
-#Unpack recovery
-unpackbootimg -i /sdcard/abm/tmp/recovery/boot.img -o /sdcard/abm/tmp/recovery/
 
 #Go to dt dir, ectract dtb and go back
 cwd=$(pwd)
@@ -30,15 +25,8 @@ cd /sdcard/abm/tmp/boot/
 "$cwd/split-appended-dtb" boot.img-zImage
 mv kernel kernel.gz
 gunzip -d kernel.gz
-
-# shellcheck disable=SC2164
-cd /sdcard/abm/tmp/recovery/
-"$cwd/split-appended-dtb" boot.img-zImage
-mv kernel kernel.gz
-gunzip -d kernel.gz
 # shellcheck disable=SC2164
 cd "$cwd"
-
 umount /data/abmmeta
 
 #Write partition table
@@ -76,14 +64,6 @@ dd if="$2" of="/dev/block/mmcblk1p$systempart"
 ENTRYNUM=`find /cache/db/entries -name "entry*" | wc -l`
 ENTRYNUM=$((ENTRYNUM+1))
 
-#Patch recovery
-(cd /sdcard/abm/tmp/recovery/rd && gunzip -c /sdcard/abm/tmp/recovery/boot.img-ramdisk.gz | cpio -i )
-sed -i "s/\/dev\/block\/platform\/bootdevice\/by-name\/system/\/dev\/block\/mmcblk1p$systempart/g" /sdcard/abm/tmp/recovery/rd/fstab.mt6763
-sed -i "s/\/dev\/block\/platform\/bootdevice\/by-name\/userdata/\/dev\/block\/mmcblk1p$datapart/g" /sdcard/abm/tmp/recovery/rd/fstab.mt6763
-sed -i "s/\/dev\/block\/platform\/bootdevice\/by-name\/system/\/dev\/block\/mmcblk1p$systempart/g" /sdcard/abm/tmp/recovery/rd/etc/recovery.fstab
-sed -i "s/\/dev\/block\/platform\/bootdevice\/by-name\/userdata/\/dev\/block\/mmcblk1p$datapart/g" /sdcard/abm/tmp/recovery/rd/etc/recovery.fstab
-(cd /sdcard/abm/tmp/recovery/rd && find . | cpio -o -H newc | gzip > "/cache/$ENTRYNUM/initrdrecovery.cpio.gz")
-
 mkdir "/cache/$ENTRYNUM"
 #Copy dtb
 cp /sdcard/abm/tmp/boot/dtbdump_1.dtb "/cache/$ENTRYNUM/dtb.dtb"
@@ -103,14 +83,6 @@ cat << EOF >> /cache/db/entries/entry"$ENTRYNUM".conf
   initrd     $ENTRYNUM/initrd.cpio.gz
   dtb        $ENTRYNUM/dtb.dtb
   options    bootopt=64S3,32N2,64N2 androidboot.seliux=permissive systempart=/dev/mmcblk1p$systempart datapart=/dev/mmcblk1p$datapart 
-EOF
-
-cat << EOF >> /cache/db/entries/entryRECOVERY"$ENTRYNUM".conf
-  title      $4 Recovery
-  linux      $ENTRYNUM/zImage
-  initrd     $ENTRYNUM/initrdrecovery.cpio.gz
-  dtb        $ENTRYNUM/dtb.dtb
-  options    bootopt=64S3,32N2,64N2 androidboot.seliux=permissive
 EOF
 
 #Clean up
