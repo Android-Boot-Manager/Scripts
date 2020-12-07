@@ -13,11 +13,11 @@ dd if="$1" of=/dev/block/by-name/lk
 pkill -f logcat
 
 # Format cache
-umount -f /cache
-./lz4 -d vollacache.img.lz4 vollacache.img
-dd if=vollacache.img of=/dev/block/by-name/cache
-rm vollacache.img
-
+umount /cache || exit 1
+#./lz4 -d vollacache.img.lz4 vollacache.img
+#dd if=vollacache.img of=/dev/block/by-name/cache
+#rm vollacache.img
+mke2fs /dev/block/by-name/cache
 # Mount cache
 mount -t ext4 /dev/block/by-name/cache /cache
 sleep 1
