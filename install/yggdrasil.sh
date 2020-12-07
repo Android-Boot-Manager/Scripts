@@ -20,6 +20,7 @@ rm vollacache.img
 
 # Mount cache
 mount -t ext4 /dev/block/by-name/cache /cache
+sleep 1
 mount --bind /cache /data/abm/bootset
 mkdir -p /data/abm/bootset/db
 mkdir -p /data/abm/bootset/lk2nd
