@@ -1,7 +1,7 @@
 #!/system/bin/sh
 
 # Create working dir
-mkdir -p /sdcard/abm
+mkdir -p /sdcard/abm /data/abm/bootset
 
 # Backup
 dd if=/dev/block/by-name/lk of=/sdcard/abm/stocklk.img
@@ -44,4 +44,4 @@ cat << EOF >> /data/abm/bootset/db/entries/entry01.conf
   xRomData   real
 EOF
 
-cat yggdrasil > /data/abm/codename.cfg
+echo yggdrasil > /data/abm/codename.cfg
