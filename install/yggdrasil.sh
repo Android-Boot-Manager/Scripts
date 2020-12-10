@@ -23,7 +23,8 @@ rm vollacache.img
 mount -t ext4 /dev/block/by-name/cache /cache
 sleep 1
 mkdir -p /cache/db /cache/lk2nd
-
+mount --bind /cache /data/abm/bootset
+mount --bind /data/abm/bootset/db /data/abm/bootset/lk2nd
 
 # Create folder for entries
 mkdir -p /data/abm/bootset/db/entries
