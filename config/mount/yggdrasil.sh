@@ -1,2 +1,2 @@
-mount --bind /cache /data/bootset
-mount --bind /data/bootset/db /data/bootset/lk2nd
+mount --bind /cache /data/abm/bootset
+mount --bind /data/abm/bootset/db /data/abm/bootset/lk2nd
