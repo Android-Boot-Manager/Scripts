@@ -11,19 +11,19 @@ dd if="$1" of=/dev/block/by-name/lk
 
 # Kill logcat that opens some magisk log in cache
 pkill -f logcat
+pkill logcat
 
 # Format cache
-umount /cache || exit 1
-#./lz4 -d vollacache.img.lz4 vollacache.img
-#dd if=vollacache.img of=/dev/block/by-name/cache
-#rm vollacache.img
-mke2fs /dev/block/by-name/cache
+umount /cache
+./lz4 -d vollacache.img.lz4 vollacache.img
+dd if=vollacache.img of=/dev/block/by-name/cache
+rm vollacache.img
+
 # Mount cache
 mount -t ext4 /dev/block/by-name/cache /cache
 sleep 1
 mkdir -p /cache/db /cache/lk2nd
-mount --bind /cache /data/abm/bootset
-mount --bind /data/abm/bootset/db /data/abm/bootset/lk2nd
+
 
 # Create folder for entries
 mkdir -p /data/abm/bootset/db/entries
@@ -33,7 +33,7 @@ cat << EOF >> /data/abm/bootset/db/db.conf
    default    Entry 01
    timeout    5
 EOF
-cat << EOF >> /data/abm/bootset/db/entries/entry01.conf
+cat << EOF >> "/data/abm/bootset/db/entries/$2.conf"
   title      $3
   linux      null
   initrd     null
