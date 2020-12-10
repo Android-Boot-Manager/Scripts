@@ -20,7 +20,7 @@ dd if=vollacache.img of=/dev/block/by-name/cache
 rm vollacache.img
 
 # Mount cache
-mount -t ext4 /dev/block/by-name/cache /cache
+mount -t ext2 /dev/block/by-name/cache /cache
 sleep 1
 mkdir -p /cache/db /cache/lk2nd
 mount --bind /cache /data/abm/bootset
