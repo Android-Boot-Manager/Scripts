@@ -50,6 +50,9 @@ cat << EOF >> "/data/abm/bootset/db/entries/$1.conf"
   initrd     $1/initrd.cpio.gz
   dtb        $1/dtb.dtb
   options    bootopt=64S3,32N2,64N2 androidboot.selinux=permissive systempart=/dev/mmcblk1p$4 datapart=/dev/mmcblk1p$5
+  xsystem    $3
+  xdata      $4
+  xtype      UT
 EOF
 
 #Clean up
