@@ -37,9 +37,9 @@ cat << EOF >> "/data/abm/bootset/db/entries/$2.conf"
   initrd     null
   dtb        null
   options    null
-  xRom       real
-  xRomSystem real
-  xRomData   real
+  xtype      droid
+  xsystem    real
+  xdata      real
 EOF
 
 echo yggdrasil > /data/abm/codename.cfg
