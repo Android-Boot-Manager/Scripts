@@ -49,7 +49,7 @@ cat << EOF >> "/data/abm/bootset/db/entries/$1.conf"
   linux      $1/zImage
   initrd     $1/initrd.cpio.gz
   dtb        $1/dtb.dtb
-  options    bootopt=64S3,32N2,64N2 androidboot.selinux=permissive systempart=/dev/mmcblk1p$4 datapart=/dev/mmcblk1p$5
+  options    bootopt=64S3,32N2,64N2 androidboot.selinux=permissive systempart=/dev/mmcblk1p$3 datapart=/dev/mmcblk1p$4
   xsystem    $3
   xdata      $4
   xtype      UT
