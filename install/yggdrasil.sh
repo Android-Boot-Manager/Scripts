@@ -9,18 +9,6 @@ dd if=/dev/block/by-name/lk of=/sdcard/abm/stocklk.img
 # Flash lbootloader to lk partition
 dd if="$1" of=/dev/block/by-name/lk 
 
-# Kill logcat that opens some magisk log in cache
-pkill logcat
-pkill -f logcat
-
-# Format cache
-umount /cache || umount -f /cache
-./lz4 -d vollacache.img.lz4 vollacache.img
-dd if=vollacache.img of=/dev/block/by-name/cache
-rm vollacache.img
-
-# Mount cache
-mount -t ext2 /dev/block/by-name/cache /cache
 mkdir -p /cache/db /cache/lk2nd
 mount --bind /cache /data/abm/bootset
 mount --bind /data/abm/bootset/db /data/abm/bootset/lk2nd
