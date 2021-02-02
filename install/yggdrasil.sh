@@ -15,7 +15,9 @@ pkill -f logcat
 
 # Format cache
 umount /cache || umount -f /cache
-mke2fs /dev/block/by-name/cache
+./lz4 -d vollacache.img.lz4 vollacache.img
+dd if=vollacache.img of=/dev/block/by-name/cache
+rm vollacache.img
 
 # Mount cache
 mount -t ext2 /dev/block/by-name/cache /cache
