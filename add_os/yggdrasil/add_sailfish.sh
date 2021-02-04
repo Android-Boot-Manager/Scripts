@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-# Script for installing SailfishOS for ABM. Parametrs: ROM folder name, ROM name in menu, system partition number, data partition number, zip file path.
+# Script for installing SailfishOS for ABM. Parametrs: ROM folder name, ROM name in menu, system partition number, zip file path.
 
 TK="/data/data/org.androidbootmanager.app/assets/Toolkit"
 PATH="$TK:$PATH"
@@ -14,7 +14,7 @@ mkdir -p /sdcard/abm/tmp/sfos/rd
 mkdir -p /data/abm/mnt
 
 #Unpack zip
-unzip "$5" -d /sdcard/abm/tmp/sfos/
+unzip "$4" -d /sdcard/abm/tmp/sfos/
 
 #Copy boot
 cp /sdcard/abm/tmp/sfos/hybris-boot.img /sdcard/abm/tmp/boot/boot.img
@@ -44,7 +44,6 @@ mkdir "/data/abm/bootset/$1"
 
 #Patch ramdisk
 (cd /sdcard/abm/tmp/sfos/rd && gunzip -c /sdcard/abm/tmp/boot/boot.img-ramdisk.gz | cpio -i )
-# hmmm, is this correct? TODO: check that
 sed -i "/DATA_PARTITION=/c\DATA_PARTITION=/dev/mmcblk1p$3" /sdcard/abm/tmp/sfos/rd/init
 (cd /sdcard/abm/tmp/sfos/rd && find . | cpio -o -H newc | gzip > "/data/abm/bootset/$1/initrd.cpio.gz")
 
@@ -60,7 +59,9 @@ cat << EOF >> "/data/abm/bootset/db/entries/$1.conf"
   linux      $1/zImage
   initrd     $1/initrd.cpio.gz
   dtb        $1/dtb.dtb
-  options    bootopt=64S3,32N2,64N2 androidboot.selinux=permissive systempart=/dev/mmcblk1p$3 datapart=/dev/mmcblk1p$4
+  options    bootopt=64S3,32N2,64N2 androidboot.selinux=permissive systempart=/dev/mmcblk1p$3
+  xsystem $3
+  xdata SFOS
 EOF
 
 #Clean up
