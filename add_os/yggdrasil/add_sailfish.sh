@@ -1,8 +1,11 @@
 #!/system/bin/sh
 
-# Script for installing SailfishOS, with system image and halium boot for ABM. Parametrs: ROM name, zip file path.
+# Script for installing SailfishOS for ABM. Parametrs: ROM folder name, ROM name in menu, system partition number, data partition number, zip file path.
 
-PATH=.:$PATH
+TK="/data/data/org.androidbootmanager.app/assets/Toolkit"
+PATH="$TK:$PATH"
+cd "$TK" || exit 24
+
 # Create working dir
 mkdir -p /sdcard/abm
 mkdir -p /sdcard/abm/tmp
@@ -11,7 +14,7 @@ mkdir -p /sdcard/abm/tmp/sfos/rd
 mkdir -p /data/abm/mnt
 
 #Unpack zip
-unzip "$2" -d /sdcard/abm/tmp/sfos/
+unzip "$5" -d /sdcard/abm/tmp/sfos/
 
 #Copy boot
 cp /sdcard/abm/tmp/sfos/hybris-boot.img /sdcard/abm/tmp/boot/boot.img
@@ -20,61 +23,44 @@ cp /sdcard/abm/tmp/sfos/hybris-boot.img /sdcard/abm/tmp/boot/boot.img
 unpackbootimg -i /sdcard/abm/tmp/boot/boot.img -o /sdcard/abm/tmp/boot/
 
 #Go to dt dir, ectract dtb and go back
-cwd=$(pwd)
 # shellcheck disable=SC2164
 cd /sdcard/abm/tmp/boot/
-"$cwd/split-appended-dtb" boot.img-zImage
+split-appended-dtb boot.img-zImage
 mv kernel kernel.gz
 gunzip -d kernel.gz
 # shellcheck disable=SC2164
-cd "$cwd"
-umount /data/abmmeta
-
-
-#Write partition table
-# shellcheck disable=SC2012
-sgdisk --new=0::+7340032 /dev/block/mmcblk1
-
-#sync pt
-blockdev --rereadpt /dev/block/mmcblk1; sleep 3
-
-#Find partition number 
-# shellcheck disable=SC2012
-systempart=$(echo $(ls /dev/block/mmcblk1p*) | sed 's/ //g' | grep -Eo '[0-9]+$')
+cd "$TK"
 
 #Format partition
-true | mkfs.ext4 "/dev/block/mmcblk1p$systempart"
+true | mkfs.ext4 "/dev/block/mmcblk1p$3"
 
 #Extract rootfs
-mount "/dev/block/mmcblk1p$systempart" /data/abm/mnt
+mount "/dev/block/mmcblk1p$3" /data/abm/mnt
 mkdir -p /data/abm/mnt/.stowaways/sailfishos
 tar --numeric-owner -xvjf /sdcard/abm/tmp/sfos/*.tar.bz2 -C /data/abm/mnt/.stowaways/sailfishos
 umount /data/abm/mnt
 
-ENTRYNUM=`find /cache/db/entries -name "entry*" | wc -l`
-ENTRYNUM=$((ENTRYNUM+1))
-
-mkdir "/cache/$ENTRYNUM"
+mkdir "/data/abm/bootset/$1"
 
 #Patch ramdisk
 (cd /sdcard/abm/tmp/sfos/rd && gunzip -c /sdcard/abm/tmp/boot/boot.img-ramdisk.gz | cpio -i )
-sed -i "/DATA_PARTITION=/c\DATA_PARTITION=/dev/mmcblk1p$systempart" /sdcard/abm/tmp/sfos/rd/init
-(cd /sdcard/abm/tmp/sfos/rd && find . | cpio -o -H newc | gzip > "/cache/$ENTRYNUM/initrd.cpio.gz")
-
+# hmmm, is this correct? TODO: check that
+sed -i "/DATA_PARTITION=/c\DATA_PARTITION=/dev/mmcblk1p$3" /sdcard/abm/tmp/sfos/rd/init
+(cd /sdcard/abm/tmp/sfos/rd && find . | cpio -o -H newc | gzip > "/data/abm/bootset/$1/initrd.cpio.gz")
 
 #Copy dtb
-cp /sdcard/abm/tmp/boot/dtbdump_1.dtb "/cache/$ENTRYNUM/dtb.dtb"
+cp /sdcard/abm/tmp/boot/dtbdump_1.dtb "/data/abm/bootset/$1/dtb.dtb"
 
 #Copy kernel
-cp /sdcard/abm/tmp/boot/kernel "/cache/$ENTRYNUM/zImage"
+cp /sdcard/abm/tmp/boot/kernel "/data/abm/bootset/$1/zImage"
 
 #Create entry
-cat << EOF >> /cache/db/entries/entry"$ENTRYNUM".conf
-  title      $1
-  linux      $ENTRYNUM/zImage
-  initrd     $ENTRYNUM/initrd.cpio.gz
-  dtb        $ENTRYNUM/dtb.dtb
-  options    bootopt=64S3,32N2,64N2 androidboot.seliux=permissive systempart=/dev/mmcblk1p$systempart datapart=/dev/mmcblk1p$datapart 
+cat << EOF >> "/data/abm/bootset/db/entries/$1.conf"
+  title      $2
+  linux      $1/zImage
+  initrd     $1/initrd.cpio.gz
+  dtb        $1/dtb.dtb
+  options    bootopt=64S3,32N2,64N2 androidboot.selinux=permissive systempart=/dev/mmcblk1p$3 datapart=/dev/mmcblk1p$4
 EOF
 
 #Clean up
