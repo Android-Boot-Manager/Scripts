@@ -6,7 +6,7 @@ mkdir -p /sdcard/abm /data/abm/bootset
 # Backup
 dd if=/dev/block/by-name/lk of=/sdcard/abm/stocklk.img
 
-# Flash lbootloader to lk partition
+# Flash bootloader to lk partition
 dd if="$1" of=/dev/block/by-name/lk 
 
 mkdir -p /cache/db /cache/lk2nd
