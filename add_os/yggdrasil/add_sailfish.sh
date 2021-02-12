@@ -10,9 +10,6 @@ cd "$TK" || exit 24
 mkdir -p /sdcard/abm/tmp/sfos/rd
 mkdir -p /data/abm/mnt
 
-# Copy boot
-cp /sdcard/abm/tmp/sfos/hybris-boot.img /sdcard/abm/tmp/boot/boot.img
-
 # Unpack boot
 unpackbootimg -i "$5" -o /sdcard/abm/tmp/boot/
 
