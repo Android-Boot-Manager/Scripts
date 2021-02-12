@@ -1,26 +1,20 @@
 #!/system/bin/sh
 
-# Script for installing SailfishOS for ABM. Parameters: ROM folder name, ROM name in menu, system partition number, zip file path.
+# Script for installing SailfishOS for ABM. Parameters: ROM folder name, ROM name in menu, system partition number, Sailfish lvm image path, hybris-boot path.
 
 TK="/data/data/org.androidbootmanager.app/assets/Toolkit"
 PATH="$TK:$PATH"
 cd "$TK" || exit 24
 
 # Create working dir
-mkdir -p /sdcard/abm
-mkdir -p /sdcard/abm/tmp
-mkdir -p /sdcard/abm/tmp/boot
 mkdir -p /sdcard/abm/tmp/sfos/rd
 mkdir -p /data/abm/mnt
-
-# Unpack zip
-unzip "$4" -d /sdcard/abm/tmp/sfos/
 
 # Copy boot
 cp /sdcard/abm/tmp/sfos/hybris-boot.img /sdcard/abm/tmp/boot/boot.img
 
 # Unpack boot
-unpackbootimg -i /sdcard/abm/tmp/boot/boot.img -o /sdcard/abm/tmp/boot/
+unpackbootimg -i "$5" -o /sdcard/abm/tmp/boot/
 
 # Go to dt dir, extract dtb and go back
 # shellcheck disable=SC2164
@@ -31,20 +25,15 @@ gunzip -d kernel.gz
 # shellcheck disable=SC2164
 cd "$TK"
 
-# Format partition
-true | mkfs.ext4 "/dev/block/mmcblk1p$3"
-
-# Extract rootfs
-mount "/dev/block/mmcblk1p$3" /data/abm/mnt
-mkdir -p /data/abm/mnt/.stowaways/sailfishos
-tar --numeric-owner -xvjf /sdcard/abm/tmp/sfos/*.tar.bz2 -C /data/abm/mnt/.stowaways/sailfishos
-umount /data/abm/mnt
+# Write SailfishOS image
+echo "PLEASE BE PATIENT! This it going to take a long while."
+dd if="$4" of="/dev/block/mmcblk1p$3"
 
 mkdir "/data/abm/bootset/$1"
 
 # Patch ramdisk
 (cd /sdcard/abm/tmp/sfos/rd && gunzip -c /sdcard/abm/tmp/boot/boot.img-ramdisk.gz | cpio -i )
-sed -i "/DATA_PARTITION=/c\DATA_PARTITION=/dev/mmcblk1p$3" /sdcard/abm/tmp/sfos/rd/init
+sed -i "s/PHYSDEV=$(find-mmc-bypartlabel "\$label")/sleep 10\n        PHYSDEV=\/dev\/mmcblk1p$3/g" /sdcard/abm/tmp/sfos/rd/sbin/root-mount
 (cd /sdcard/abm/tmp/sfos/rd && find . | cpio -o -H newc | gzip > "/data/abm/bootset/$1/initrd.cpio.gz")
 
 # Copy dtb
