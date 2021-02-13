@@ -7,7 +7,7 @@ PATH="$TK:$PATH"
 cd "$TK" || exit 24
 
 # Create working dir
-mkdir -p /sdcard/abm/tmp/sfos/rd
+mkdir -p /cache/abm/tmp/sfos/rd
 mkdir -p /sdcard/abm/tmp/boot
 mkdir -p /data/abm/mnt
 
@@ -33,9 +33,11 @@ dd if="$4" of="/dev/block/mmcblk1p$3"
 mkdir "/data/abm/bootset/$1"
 
 # Patch ramdisk
-(cd /sdcard/abm/tmp/sfos/rd && gunzip -c /sdcard/abm/tmp/boot/boot.img-ramdisk.gz | cpio -i )
-sed -i 's/PHYSDEV=$(find-mmc-bypartlabel "\$label")/sleep 10; PHYSDEV=\/dev\/mmcblk1p'"$3/g" /sdcard/abm/tmp/sfos/rd/sbin/root-mount
-(cd /sdcard/abm/tmp/sfos/rd && find . | cpio -o -H newc | gzip > "/data/abm/bootset/$1/initrd.cpio.gz")
+(cd /cache/abm/tmp/sfos/rd && gunzip -c /sdcard/abm/tmp/boot/boot.img-ramdisk.gz | cpio -i )
+# This is not supposed to be executed, ShellCheck.
+# shellcheck disable=SC2016
+sed -i 's/PHYSDEV=$(find-mmc-bypartlabel "\$label")/sleep 10; PHYSDEV=\/dev\/mmcblk1p'"$3/g" /cache/abm/tmp/sfos/rd/sbin/root-mount
+(cd /cache/abm/tmp/sfos/rd && find . | cpio -o -H newc | gzip > "/data/abm/bootset/$1/initrd.cpio.gz")
 
 # Copy dtb
 cp /sdcard/abm/tmp/boot/dtbdump_1.dtb "/data/abm/bootset/$1/dtb.dtb"
@@ -55,4 +57,4 @@ cat << EOF >> "/data/abm/bootset/db/entries/$1.conf"
 EOF
 
 # Clean up
-#rm -r /sdcard/abm/tmp
+#rm -rf /sdcard/abm/tmp /cache/abm/tmp
