@@ -28,7 +28,7 @@ cd "$TK" || exit 26
 # Format partition
 true | mkfs.ext4 "/dev/block/mmcblk1p$4"
 
-echo "PLEASE BE PATIENT! This it going to take a long while."
+echo "PLEASE BE PATIENT! This is going to take a long while."
 
 # Write image
 dd if="$5" of="/dev/block/mmcblk1p$3"

@@ -8,10 +8,14 @@ cd "$TK" || exit 24
 
 # Create working dir
 mkdir -p /sdcard/abm/tmp/sfos/rd
+mkdir -p /sdcard/abm/tmp/boot
 mkdir -p /data/abm/mnt
 
+# Copy boot
+cp "$5" /sdcard/abm/tmp/boot/boot.img
+
 # Unpack boot
-unpackbootimg -i "$5" -o /sdcard/abm/tmp/boot/
+unpackbootimg -i /sdcard/abm/tmp/boot/boot.img -o /sdcard/abm/tmp/boot/
 
 # Go to dt dir, extract dtb and go back
 # shellcheck disable=SC2164
@@ -23,14 +27,14 @@ gunzip -d kernel.gz
 cd "$TK"
 
 # Write SailfishOS image
-echo "PLEASE BE PATIENT! This it going to take a long while."
+echo "PLEASE BE PATIENT! This is going to take a long while."
 dd if="$4" of="/dev/block/mmcblk1p$3"
 
 mkdir "/data/abm/bootset/$1"
 
 # Patch ramdisk
 (cd /sdcard/abm/tmp/sfos/rd && gunzip -c /sdcard/abm/tmp/boot/boot.img-ramdisk.gz | cpio -i )
-sed -i "s/PHYSDEV=$(find-mmc-bypartlabel "\$label")/sleep 10\n        PHYSDEV=\/dev\/mmcblk1p$3/g" /sdcard/abm/tmp/sfos/rd/sbin/root-mount
+sed -i 's/PHYSDEV=$(find-mmc-bypartlabel "\$label")/sleep 10; PHYSDEV=\/dev\/mmcblk1p'"$3/g" /sdcard/abm/tmp/sfos/rd/sbin/root-mount
 (cd /sdcard/abm/tmp/sfos/rd && find . | cpio -o -H newc | gzip > "/data/abm/bootset/$1/initrd.cpio.gz")
 
 # Copy dtb
