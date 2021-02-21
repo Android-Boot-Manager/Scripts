@@ -53,7 +53,7 @@ cat << EOF >> "/data/abm/bootset/db/entries/$1.conf"
   dtb        $1/dtb.dtb
   options    bootopt=64S3,32N2,64N2 androidboot.selinux=permissive
   xsystem $3
-  xdata SFOS
+  xtype SFOS
 EOF
 
 # Clean up
