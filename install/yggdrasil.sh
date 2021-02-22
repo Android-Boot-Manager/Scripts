@@ -1,10 +1,10 @@
 #!/system/bin/sh
 
 # Create working dir
-mkdir -p /sdcard/abm /data/abm/bootset
+mkdir -p /data/abm/bootset
 
 # Backup
-dd if=/dev/block/by-name/lk of=/sdcard/abm/stocklk.img
+dd if=/dev/block/by-name/lk of=/data/abm/stocklk.img
 
 # Flash bootloader to lk partition
 dd if="$1" of=/dev/block/by-name/lk 
