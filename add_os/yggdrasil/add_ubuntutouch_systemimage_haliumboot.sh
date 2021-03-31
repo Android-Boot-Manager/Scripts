@@ -26,7 +26,12 @@ gunzip -d kernel.gz
 cd "$TK" || exit 26
 
 # Format partition
-true | mkfs.ext4 "/dev/block/mmcblk1p$4"
+DATAPART=$4
+dataformat() {
+true | mkfs.ext4 "/dev/block/mmcblk1p$DATAPART"
+}
+
+$FORMATDATA && dataformat
 
 #Copy dtb
 cp /data/abm/tmp/boot/dtbdump_1.dtb "/data/abm/bootset/$1/dtb.dtb"
