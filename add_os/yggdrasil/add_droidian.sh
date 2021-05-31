@@ -53,7 +53,7 @@ mkdir -p /data/abm/tmp/sd
 mount "/dev/block/mmcblk1p$DATAPART" /data/abm/tmp/sd -text4
 
 # Copy the rootfs
-unzip -j "$4" data/rootfs.img -d /data/abm/tmp/sd/
+/sbin/.magisk/busybox/unzip -j "$4" data/rootfs.img -d /data/abm/tmp/sd/
 
 # Resize the rootfs
 e2fsck -fy /data/abm/tmp/sd/rootfs.img
