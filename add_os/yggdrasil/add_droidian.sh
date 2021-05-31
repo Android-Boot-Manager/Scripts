@@ -18,9 +18,6 @@ unzip "$6" -d /data/abm/tmp/adaptation
 # extract devtools
 unzip "$5" -d /data/abm/tmp/devtools
 
-# extract rootfs
-unzip "$4" -d /data/abm/tmp/rootfs
-
 # Copy boot
 cp /data/abm/tmp/adaptation/boot.img /data/abm/tmp/boot/boot.img
 
@@ -37,10 +34,10 @@ cd "$TK" || exit 26
 # Format partition
 DATAPART=$3
 dataformat() {
-mkfs.ext4 "/dev/block/mmcblk1p$DATAPART"
+true | mkfs.ext4 "/dev/block/mmcblk1p$DATAPART"
 }
 
-dataformat
+$FORMATDATA && dataformat
 
 #Copy dtb
 cp /data/abm/tmp/boot/dtbdump_1.dtb "/data/abm/bootset/$1/dtb.dtb"
@@ -56,7 +53,7 @@ mkdir -p /data/abm/tmp/sd
 mount "/dev/block/mmcblk1p$DATAPART" /data/abm/tmp/sd -text4
 
 # Copy the rootfs
-cp /data/abm/tmp/rootfs/data/rootfs.img /data/abm/tmp/sd/rootfs.img
+unzip -j "$4" data/rootfs.img -d /data/abm/tmp/sd/
 
 # Resize the rootfs
 e2fsck -fy /data/abm/tmp/sd/rootfs.img
