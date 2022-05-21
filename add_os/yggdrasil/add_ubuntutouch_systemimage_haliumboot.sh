@@ -2,7 +2,7 @@
 
 # Script for installing Ubuntu Touch, with system image and halium boot for ABM. Parameters: ROM folder name, ROM name in menu, system partition number, data partition number, haliumboot path
 
-TK="/data/data/org.androidbootmanager.app/assets/Toolkit"
+TK="/data/data/org.andbootmgr.app/assets/Toolkit"
 PATH="$TK:$PATH"
 cd "$TK" || exit 24
 

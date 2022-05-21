@@ -2,7 +2,7 @@
 
 # Script for installing SailfishOS for ABM. Parameters: ROM folder name, ROM name in menu, system partition number, hybris-boot path.
 
-TK="/data/data/org.androidbootmanager.app/assets/Toolkit"
+TK="/data/data/org.andbootmgr.app/assets/Toolkit"
 PATH="$TK:$PATH"
 cd "$TK" || exit 24
 

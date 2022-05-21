@@ -2,7 +2,7 @@
 
 # Script for installing Droidian for ABM. Parameters: ROM folder name, ROM name in menu, data partition number, rootfs zip path, devtools zip path, adaptation zip file
 
-TK="/data/data/org.androidbootmanager.app/assets/Toolkit"
+TK="/data/data/org.andbootmgr.app/assets/Toolkit"
 PATH="$TK:$PATH"
 cd "$TK" || exit 24
 
