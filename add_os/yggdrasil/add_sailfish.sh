@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-# Script for installing SailfishOS for ABM. Parameters: ROM folder name, boot path, system partition number, vendor partition number, sfos partition number.
+# Script for installing SailfishOS for ABM. Parameters: ROM folder name, boot path, vendor partition number, system partition number, sfos partition number.
 
 TK="/data/data/org.andbootmgr.app/assets/Toolkit"
 PATH="$TK:$PATH"
@@ -34,7 +34,7 @@ Description=Droid mount for /system_root
 Before=local-fs.target systemd-modules-load.service
 
 [Mount]
-What=/dev/mmcblk1p$3
+What=/dev/mmcblk1p$4
 Where=/system_root
 Type=ext4
 Options=ro
@@ -56,7 +56,7 @@ Description=Droid mount for /vendor
 Before=local-fs.target systemd-modules-load.service
 
 [Mount]
-What=/dev/mmcblk1p$4
+What=/dev/mmcblk1p$3
 Where=/vendor
 Type=ext4
 Options=ro
