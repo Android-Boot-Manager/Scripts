@@ -21,8 +21,6 @@ unpackbootimg -i /data/abm/tmp/boot/boot.img -o /data/abm/tmp/boot/
 # shellcheck disable=SC2164
 cd /data/abm/tmp/boot/
 split-appended-dtb boot.img-zImage
-#mv kernel kernel.gz
-#gunzip -d kernel.gz
 # shellcheck disable=SC2164
 cd "$TK"
 
