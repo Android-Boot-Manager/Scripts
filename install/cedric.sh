@@ -19,3 +19,6 @@ cp /data/abm/tmp/boot/boot.img-zImage "/data/abm/bootset/$1/kernel"
 
 # Copy rd
 cp /data/abm/tmp/boot/boot.img-ramdisk.gz "/data/abm/bootset/$1/initrd.cpio.gz"
+
+# Cleanup
+rm -rf /data/abm/tmp
