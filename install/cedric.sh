@@ -1,5 +1,9 @@
 #!/system/bin/sh
 
+TK="/data/data/org.andbootmgr.app/assets/Toolkit"
+PATH="$TK:$PATH"
+cd "$TK" || exit 24
+
 CMDLINE="console=null" #TODO
 sed -i "s#REPLACECMDLINE#${CMDLINE}#g" "/data/abm/bootset/db/entries/$1.conf"
 
