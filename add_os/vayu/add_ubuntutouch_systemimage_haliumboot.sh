@@ -7,7 +7,8 @@ cd "$TK" || exit 24
 sed -i "s#replaceme#systempart=/dev/mmcblk0p$4 datapart=/dev/mmcblk0p$5#g" /data/abm/bootset/db/entries/"$1".conf
 
 # Copy ut vendor
-resize2fs /dev/block/mmcblk0p$
+e2fsck -f /dev/block/mmcblk0p$4
+resize2fs /dev/block/mmcblk0p$4
 mkdir -p /data/abm/tmp/mnt
 mount /dev/block/mmcblk0p$4 /data/abm/tmp/mnt
 cp "$3" /data/abm/tmp/mnt/var/lib/lxc/android/vendor.img
@@ -45,11 +46,19 @@ msmidc=$(echo "$msmidc" | awk '{print $4}')
 # shellcheck disable=SC3057
 msmidc=${msmidc:0:7}
 echo "msm-id is $msmidc"
-bidc=$(grep board-id < /data/abm/tmp/dt/current.dts)
-bidc=$(echo "$bidc" | awk '{print $3}')
-# shellcheck disable=SC3057
-bidc=${bidc:1:4}
-echo "board-id is $bidc"
+
+# Fetch abm-board-id from the command line
+abm_board_id_arg=$(cat /proc/cmdline | grep -oE 'abm-board-id=[^ ]+' | cut -d= -f2)
+
+# If abm-board-id argument is found, store it in bidc variable
+if [ -n "$abm_board_id_arg" ]; then
+    bidc=${abm_board_id_arg:0:2}
+    echo "board-id is $bidc"
+else
+    echo "abm-board-id not found in command line."
+    exit 1
+fi
+
 
 for f in /data/abm/tmp/dt/dtbdump_*.dtb
 do
@@ -58,6 +67,7 @@ do
  msmidt=$(echo "$msmidt" | awk '{print $4}')
  # shellcheck disable=SC3057
  msmidt=${msmidt:0:7}
+ echo "msmidt $msmidt"
  if [ "$msmidt" = "$msmidc" ]; then
   echo "Found correct dtb $f"
   sed -i '/vendor {/,/};/s/\(\s*status =\).*/\1 "disabled";/'  /data/abm/tmp/dt/test.dts
@@ -74,10 +84,13 @@ for f in /data/abm/tmp/dtbo/dtbdump_*.dtb
 do
  dtc -I dtb -O dts -o /data/abm/tmp/dtbo/test.dts "$f"
  bidt=$(grep board-id < /data/abm/tmp/dtbo/test.dts)
+ echo "bidt1 $bidt"
  bidt=$(echo "$bidt" | awk '{print $3}')
+ echo "bidt2 $bidt"
  # shellcheck disable=SC3057
- bidt=${bidt:1:4}
- if [ "$bidt" = "$bidc" ]; then
+ bidt=${bidt:3:4}
+ echo "bidt $bidt"
+ if [ "$bidc" == "$bidt" ]; then
   echo "Found correct dtbo $f"
   cp "$f" "/data/abm/bootset/$1/dtbo.dtbo"
  fi
