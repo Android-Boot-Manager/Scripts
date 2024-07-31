@@ -7,7 +7,7 @@ echo "logo $1/logo.bin" >> "$BOOTSET/db/entries/$1.conf"
 cp "$3" "$BOOTSET/$1/logo.bin"
 
 # Create working dir
-TEMP="$(mktemp -d install)"
+TEMP="$(mktemp -d install.XXX)"
 mkdir -p "$TEMP/boot"
 
 # Copy boot

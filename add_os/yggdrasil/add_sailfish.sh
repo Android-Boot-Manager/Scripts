@@ -1,7 +1,7 @@
 #!/system/bin/sh
 
 # Create working dir
-TEMP="$(mktemp -d install)"
+TEMP="$(mktemp -d install.XXX)"
 mkdir -p "$TEMP/sfos/rd"
 mkdir -p "$TEMP/boot"
 mkdir -p "$TEMP/mnt"

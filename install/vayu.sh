@@ -2,7 +2,7 @@
 
 # Create folder for current OS
 mkdir -p "$BOOTSET/$1"
-TEMP="$(mktemp -d install)"
+TEMP="$(mktemp -d install.XXX)"
 mkdir -p "$TEMP/boot"
 # TODO $BOOTSET/..? is this implementation detail?
 cp "$BOOTSET"/../backup_lk*.img "$TEMP/boot/boot.img"
