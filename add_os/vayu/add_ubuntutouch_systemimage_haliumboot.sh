@@ -5,7 +5,7 @@ sed -i "s#replaceme#systempart=/dev/mmcblk0p$4 datapart=/dev/mmcblk0p$5#g" "$BOO
 # Copy ut vendor
 e2fsck -f "/dev/block/mmcblk0p$4"
 resize2fs "/dev/block/mmcblk0p$4"
-TEMP="$(mktemp -d install.XXX)"
+TEMP="$(mktemp -d)"
 mkdir -p "$TEMP/mnt"
 mount "/dev/block/mmcblk0p$4" "$TEMP/mnt"
 cp "$3" "$TEMP/mnt/var/lib/lxc/android/vendor.img"
