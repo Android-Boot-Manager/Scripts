@@ -6,8 +6,7 @@ $SETUP || exit 0 # only run if creating config files
 mkdir -p "$BOOTSET/$1"
 TEMP="$(mktemp -d)"
 mkdir -p "$TEMP/boot"
-# TODO $BOOTSET/..? is this implementation detail?
-cp "$BOOTSET"/../backup_lk*.img "$TEMP/boot/boot.img"
+cp "$BL_BACKUP" "$TEMP/boot/boot.img"
 unpackbootimg -i "$TEMP/boot/boot.img" -o "$TEMP/boot/"
 
 CMDLINE="$(cat "$TEMP/boot/boot.img-cmdline")" #TODO
