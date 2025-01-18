@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-$SETUP || exit 0 # only run if creating config files
+$BOOTED && exit 0 # only run if bootloader is being installed
 
 # Create folder for current OS
 mkdir -p "$BOOTSET/$1"
