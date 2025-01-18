@@ -1,5 +1,7 @@
 #!/system/bin/sh
 
+$SETUP || exit 0 # only run if creating config files
+
 # Create folder for current OS
 mkdir -p "$BOOTSET/$1"
 TEMP="$(mktemp -d)"
